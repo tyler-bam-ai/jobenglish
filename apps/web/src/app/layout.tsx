@@ -41,7 +41,7 @@ export default function RootLayout({
         </LangProvider>
         <script
           dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){})}`,
+            __html: `if('serviceWorker' in navigator){var b=document.querySelector('link[rel=manifest]');var p=b?new URL(b.href).pathname.replace('/manifest.json',''):'';navigator.serviceWorker.register(p+'/sw.js').catch(function(){})}`,
           }}
         />
       </body>
