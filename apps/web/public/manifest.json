@@ -2,15 +2,15 @@
   "name": "JobEnglish AI Brasil",
   "short_name": "JobEnglish",
   "description": "Treine o inglês que sua carreira precisa. Simule entrevistas, reuniões e apresentações em inglês com IA.",
-  "start_url": "/jobenglish/",
-  "scope": "/jobenglish/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#F7F1E8",
   "theme_color": "#C8553D",
   "icons": [
     {
-      "src": "/jobenglish/icons/icon.svg",
+      "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

@@ -2,7 +2,7 @@ const CACHE_NAME = 'jobenglish-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(['/jobenglish/']))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(['/']))
   );
   self.skipWaiting();
 });
