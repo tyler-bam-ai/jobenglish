@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { useLang, t } from '@/lib/i18n';
+import { speak } from '@/lib/voice-client';
 
 interface CorrectionCardProps {
   index: number;
@@ -11,6 +13,7 @@ interface CorrectionCardProps {
 
 export function CorrectionCard({ index, you, better, why }: CorrectionCardProps) {
   const { lang } = useLang();
+  const [saved, setSaved] = useState(false);
   return (
     <div
       style={{
@@ -113,21 +116,35 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
       {/* Action buttons */}
       <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
         <button
+          onClick={() => {
+            if (saved) return;
+            try {
+              const existing = JSON.parse(localStorage.getItem('savedPhrases') || '[]');
+              existing.push({ original: you, better, why, savedAt: new Date().toISOString() });
+              localStorage.setItem('savedPhrases', JSON.stringify(existing));
+              setSaved(true);
+              setTimeout(() => setSaved(false), 2000);
+            } catch {
+              // localStorage unavailable
+            }
+          }}
           style={{
             fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
             fontSize: 11,
             fontWeight: 600,
-            background: '#F1E8D9',
-            color: '#1F1A14',
+            background: saved ? '#5E7A4F18' : '#F1E8D9',
+            color: saved ? '#5E7A4F' : '#1F1A14',
             border: 'none',
             padding: '6px 10px',
             borderRadius: 99,
             cursor: 'pointer',
+            transition: 'all 0.2s',
           }}
         >
-          {t.savePhrase[lang]}
+          {saved ? t.savedPhrase[lang] : t.savePhrase[lang]}
         </button>
         <button
+          onClick={() => speak(better)}
           style={{
             fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
             fontSize: 11,

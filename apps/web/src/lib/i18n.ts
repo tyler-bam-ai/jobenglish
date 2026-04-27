@@ -53,7 +53,7 @@ export const t: Record<string, Record<Lang, string>> = {
   diagListen: { pt: '♪ Ouvir', en: '♪ Listen' },
 
   // Home
-  greeting: { pt: 'Olá, Ana 👋', en: 'Hi, Ana 👋' },
+  greeting: { pt: 'Olá! 👋', en: 'Hello! 👋' },
   homeTitle1: { pt: 'Sua entrevista', en: 'Your interview' },
   homeTitle2: { pt: 'está mais perto.', en: 'is getting closer.' },
   currentLevel: { pt: 'NÍVEL ATUAL', en: 'CURRENT LEVEL' },
@@ -206,4 +206,13 @@ export const t: Record<string, Record<Lang, string>> = {
   // Correction card
   correction: { pt: 'CORREÇÃO', en: 'CORRECTION' },
   whyPrefix: { pt: 'Por que: ', en: 'Why: ' },
+
+  // Session view dynamic labels
+  speaking: { pt: '♪ FALANDO', en: '♪ SPEAKING' },
+  thinking: { pt: '● PENSANDO...', en: '● THINKING...' },
+  you: { pt: 'VOCÊ', en: 'YOU' },
+  translating: { pt: 'Traduzindo...', en: 'Translating...' },
+  hintLoading: { pt: 'Gerando dica...', en: 'Generating hint...' },
+  savedPhrase: { pt: '✓ Salvo', en: '✓ Saved' },
+  comingSoon: { pt: 'Em breve', en: 'Coming soon' },
 };

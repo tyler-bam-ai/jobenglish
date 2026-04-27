@@ -124,7 +124,7 @@ export default function ScenariosPage() {
             fontWeight: 700,
           }}
         >
-          A
+          &#9673;
         </div>
       </div>
 

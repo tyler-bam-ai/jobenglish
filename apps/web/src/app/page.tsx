@@ -109,7 +109,7 @@ export default function WelcomePage() {
             <span style={{ fontSize: 18, marginLeft: 4 }}>&rarr;</span>
           </Btn>
         </Link>
-        <Link href="/onboarding/goal" style={{ textDecoration: 'none' }}>
+        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
           <Btn variant="quiet" size="md">
             {t.ctaLogin[lang]}
           </Btn>

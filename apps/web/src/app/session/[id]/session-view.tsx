@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Waveform } from '@/components/ui/waveform';
 import { useLang, t } from '@/lib/i18n';
-import { chatCompletionStream } from '@/lib/ai-client';
+import { chatCompletionStream, chatCompletion } from '@/lib/ai-client';
 import { createSpeechRecognition, speakWithAI, stopSpeaking } from '@/lib/voice-client';
 import { getScenario } from '@/lib/scenarios';
 
@@ -224,7 +224,7 @@ export default function SessionView() {
         </button>
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace", fontSize: 9, letterSpacing: 1.5, color: '#E8A23A' }}>
-            {aiSpeaking ? '♪ SPEAKING' : aiThinking ? '● THINKING...' : `● ${t.liveRoleplay[lang]}`}
+            {aiSpeaking ? t.speaking[lang] : aiThinking ? t.thinking[lang] : `● ${t.liveRoleplay[lang]}`}
           </div>
           <div style={{ fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif", fontSize: 13, fontWeight: 600, marginTop: 2 }}>
             {scenario.aiRole}
@@ -260,7 +260,7 @@ export default function SessionView() {
           ) : (
             <div key={i} style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ background: '#C8553D', color: '#FFF8EC', padding: '12px 14px', borderRadius: '16px 4px 16px 16px', maxWidth: '80%', fontFamily: "var(--font-body), sans-serif" }}>
-                <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: '#FFF8EC99', letterSpacing: 1, marginBottom: 4 }}>YOU</div>
+                <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: '#FFF8EC99', letterSpacing: 1, marginBottom: 4 }}>{t.you[lang]}</div>
                 <div style={{ fontSize: 14, lineHeight: 1.4 }}>&ldquo;{turn.text}&rdquo;</div>
               </div>
             </div>
@@ -294,11 +294,73 @@ export default function SessionView() {
 
       {/* Helper chips */}
       <div style={{ padding: '8px 18px 0', display: 'flex', gap: 8, overflow: 'auto', scrollbarWidth: 'none' }}>
-        {[t.repeat[lang], t.translate[lang], t.hint[lang], t.slower[lang]].map((c) => (
-          <button key={c} style={{ background: '#FFFCF6', border: '1px solid #E7DCC9', padding: '7px 12px', borderRadius: 99, fontFamily: "var(--font-body), sans-serif", fontSize: 12, color: '#1F1A14', whiteSpace: 'nowrap', cursor: 'pointer' }}>
-            {c}
-          </button>
-        ))}
+        {/* Repeat */}
+        <button
+          onClick={() => {
+            const lastAi = [...turns].reverse().find((t) => t.speaker === 'ai');
+            if (lastAi?.text) speakWithAI(lastAi.text);
+          }}
+          style={{ background: '#FFFCF6', border: '1px solid #E7DCC9', padding: '7px 12px', borderRadius: 99, fontFamily: "var(--font-body), sans-serif", fontSize: 12, color: '#1F1A14', whiteSpace: 'nowrap', cursor: 'pointer' }}
+        >
+          {t.repeat[lang]}
+        </button>
+        {/* Translate */}
+        <button
+          onClick={async () => {
+            const lastAi = [...turns].reverse().find((t) => t.speaker === 'ai');
+            if (!lastAi?.text) return;
+            try {
+              const translation = await chatCompletion([
+                { role: 'system', content: 'Translate the following English text to Brazilian Portuguese. Return ONLY the translation, nothing else.' },
+                { role: 'user', content: lastAi.text },
+              ], { maxTokens: 200, temperature: 0.3 });
+              const clean = translation.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+              setTurns((prev) => [...prev, { speaker: 'ai', text: `🇧🇷 ${clean}` }]);
+            } catch {
+              setError(t.translating[lang]);
+            }
+          }}
+          style={{ background: '#FFFCF6', border: '1px solid #E7DCC9', padding: '7px 12px', borderRadius: 99, fontFamily: "var(--font-body), sans-serif", fontSize: 12, color: '#1F1A14', whiteSpace: 'nowrap', cursor: 'pointer' }}
+        >
+          {t.translate[lang]}
+        </button>
+        {/* Hint */}
+        <button
+          onClick={async () => {
+            if (!scenario) return;
+            const lastAi = [...turns].reverse().find((t) => t.speaker === 'ai');
+            if (!lastAi?.text) return;
+            try {
+              const hint = await chatCompletion([
+                { role: 'system', content: 'You are an English tutor helping a Brazilian professional. Given the AI interviewer\'s last message, suggest a short phrase (1-2 sentences) the learner could use to respond. Return ONLY the suggestion in English, nothing else.' },
+                { role: 'user', content: `The interviewer said: "${lastAi.text}". Suggest a response phrase.` },
+              ], { maxTokens: 100, temperature: 0.7 });
+              const clean = hint.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+              setTurns((prev) => [...prev, { speaker: 'ai', text: `💡 Hint: ${clean}` }]);
+            } catch {
+              setError(t.hintLoading[lang]);
+            }
+          }}
+          style={{ background: '#FFFCF6', border: '1px solid #E7DCC9', padding: '7px 12px', borderRadius: 99, fontFamily: "var(--font-body), sans-serif", fontSize: 12, color: '#1F1A14', whiteSpace: 'nowrap', cursor: 'pointer' }}
+        >
+          {t.hint[lang]}
+        </button>
+        {/* Slower */}
+        <button
+          onClick={() => {
+            const lastAi = [...turns].reverse().find((t) => t.speaker === 'ai');
+            if (!lastAi?.text) return;
+            stopSpeaking();
+            const utterance = new SpeechSynthesisUtterance(lastAi.text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.6;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+          }}
+          style={{ background: '#FFFCF6', border: '1px solid #E7DCC9', padding: '7px 12px', borderRadius: 99, fontFamily: "var(--font-body), sans-serif", fontSize: 12, color: '#1F1A14', whiteSpace: 'nowrap', cursor: 'pointer' }}
+        >
+          {t.slower[lang]}
+        </button>
       </div>
 
       {/* Mic dock */}

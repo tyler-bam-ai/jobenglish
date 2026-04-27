@@ -204,7 +204,10 @@ export default function DiagnosticPage() {
             {t.diagRerecord[lang]}
           </button>
           <span style={{ color: '#E7DCC9' }}>&middot;</span>
-          <button style={{ background: 'transparent', border: 'none', color: '#5C5046', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}>
+          <button
+            onClick={() => alert(t.comingSoon[lang])}
+            style={{ background: 'transparent', border: 'none', color: '#5C5046', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
+          >
             {t.diagListen[lang]}
           </button>
         </div>

@@ -52,7 +52,7 @@ export default function DashboardPage() {
             fontWeight: 700,
           }}
         >
-          A
+          &#9673;
         </div>
       </div>
 

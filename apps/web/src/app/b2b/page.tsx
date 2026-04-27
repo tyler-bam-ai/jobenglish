@@ -45,7 +45,7 @@ export default function B2BPage() {
         }}
       >
         <button
-          onClick={() => router.push('/session/demo/feedback')}
+          onClick={() => router.push('/scenarios')}
           style={{
             background: '#FFF8EC15',
             border: 'none',
@@ -322,7 +322,7 @@ export default function B2BPage() {
       <div
         style={{ padding: '12px 22px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}
       >
-        <Btn variant="accent" onClick={() => router.push('/dashboard')}>
+        <Btn variant="accent" onClick={() => window.open('mailto:contato@jobenglish.com.br?subject=JobEnglish%20for%20Teams')}>
           {t.talkToSales[lang]}
         </Btn>
         <Btn
