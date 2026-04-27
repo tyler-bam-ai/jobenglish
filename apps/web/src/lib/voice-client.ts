@@ -1,13 +1,11 @@
-const XAI_API_KEY = process.env.NEXT_PUBLIC_XAI_API_KEY || '';
+const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '';
 
-// Browser Speech Recognition (for STT - free, works in Chrome/Edge)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// ─── Browser Speech Recognition (STT) ───
 export function createSpeechRecognition(): any {
-  const SpeechRecognition =
-    (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-  if (!SpeechRecognition) return null;
-
-  const recognition = new SpeechRecognition();
+  if (typeof window === 'undefined') return null;
+  const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  if (!SR) return null;
+  const recognition = new SR();
   recognition.continuous = false;
   recognition.interimResults = true;
   recognition.lang = 'en-US';
@@ -15,84 +13,123 @@ export function createSpeechRecognition(): any {
   return recognition;
 }
 
-// Browser Speech Synthesis (for TTS - free, works everywhere)
+// ─── High-quality TTS via OpenRouter gpt-4o-audio ───
+export async function speakWithAI(text: string, onEnd?: () => void): Promise<void> {
+  try {
+    const audioBuffer = await generateSpeech(text);
+    if (audioBuffer) {
+      playPCM16(audioBuffer, onEnd);
+      return;
+    }
+  } catch (e) {
+    console.warn('AI TTS failed, falling back to browser:', e);
+  }
+  speak(text, onEnd);
+}
+
+async function generateSpeech(text: string): Promise<ArrayBuffer | null> {
+  if (!OPENROUTER_API_KEY) return null;
+
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : '',
+      'X-Title': 'JobEnglish AI Brasil',
+    },
+    body: JSON.stringify({
+      model: 'openai/gpt-4o-audio-preview',
+      modalities: ['text', 'audio'],
+      audio: { voice: 'nova', format: 'pcm16' },
+      messages: [
+        { role: 'system', content: 'You are a text-to-speech engine. Repeat the user text exactly as given. Do not add anything.' },
+        { role: 'user', content: text },
+      ],
+      max_tokens: 500,
+      stream: true,
+    }),
+  });
+
+  if (!res.ok) return null;
+
+  const reader = res.body?.getReader();
+  if (!reader) return null;
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+  const audioChunks: string[] = [];
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('data: ')) continue;
+      const data = trimmed.slice(6);
+      if (data === '[DONE]') break;
+
+      try {
+        const parsed = JSON.parse(data);
+        const audioData = parsed.choices?.[0]?.delta?.audio?.data;
+        if (audioData) audioChunks.push(audioData);
+      } catch { /* skip */ }
+    }
+  }
+
+  if (audioChunks.length === 0) return null;
+
+  // Decode base64 chunks to a single PCM16 buffer
+  const totalB64 = audioChunks.join('');
+  const binaryString = atob(totalB64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+function playPCM16(pcmBuffer: ArrayBuffer, onEnd?: () => void) {
+  const audioCtx = new AudioContext({ sampleRate: 24000 });
+  const int16 = new Int16Array(pcmBuffer);
+  const float32 = new Float32Array(int16.length);
+  for (let i = 0; i < int16.length; i++) {
+    float32[i] = int16[i] / 32768;
+  }
+
+  const audioBuffer = audioCtx.createBuffer(1, float32.length, 24000);
+  audioBuffer.getChannelData(0).set(float32);
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(audioCtx.destination);
+  source.onended = () => {
+    audioCtx.close();
+    onEnd?.();
+  };
+  source.start();
+}
+
+// ─── Browser TTS fallback ───
 export function speak(text: string, onEnd?: () => void): void {
-  if (!window.speechSynthesis) return;
-
-  // Cancel any ongoing speech
+  if (typeof window === 'undefined' || !window.speechSynthesis) {
+    onEnd?.();
+    return;
+  }
   window.speechSynthesis.cancel();
-
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
   utterance.rate = 0.9;
-  utterance.pitch = 1;
-
-  // Try to pick a natural English voice
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(
-    (v) => v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Google') || v.name.includes('Natural'))
-  );
-  if (preferred) utterance.voice = preferred;
-
   if (onEnd) utterance.onend = onEnd;
   window.speechSynthesis.speak(utterance);
 }
 
 export function stopSpeaking(): void {
+  if (typeof window === 'undefined') return;
   window.speechSynthesis?.cancel();
-}
-
-// xAI TTS via REST API (higher quality alternative)
-export async function xaiTTS(text: string): Promise<ArrayBuffer | null> {
-  if (!XAI_API_KEY) return null;
-
-  try {
-    const res = await fetch('https://api.x.ai/v1/audio/speech', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${XAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'grok-3-mini-tts',
-        input: text,
-        voice: 'eve',
-        response_format: 'mp3',
-      }),
-    });
-
-    if (!res.ok) {
-      console.warn('xAI TTS failed, falling back to browser TTS');
-      return null;
-    }
-
-    return await res.arrayBuffer();
-  } catch {
-    return null;
-  }
-}
-
-// Play audio buffer
-export function playAudioBuffer(buffer: ArrayBuffer, onEnd?: () => void): void {
-  const blob = new Blob([buffer], { type: 'audio/mp3' });
-  const url = URL.createObjectURL(blob);
-  const audio = new Audio(url);
-  audio.onended = () => {
-    URL.revokeObjectURL(url);
-    onEnd?.();
-  };
-  audio.play().catch(() => {
-    // Autoplay blocked, fall back
-    onEnd?.();
-  });
-}
-
-// Combined: try xAI TTS, fall back to browser TTS
-export async function speakWithAI(text: string, onEnd?: () => void): Promise<void> {
-  const audioBuffer = await xaiTTS(text);
-  if (audioBuffer) {
-    playAudioBuffer(audioBuffer, onEnd);
-  } else {
-    speak(text, onEnd);
-  }
 }

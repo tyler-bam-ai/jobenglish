@@ -128,19 +128,27 @@ export default function SessionView() {
     setAiSpeaking(false);
     setInterimText('');
     setRecTime(0);
+    setError('');
 
     const recognition = createSpeechRecognition();
     if (!recognition) {
-      setError('Speech recognition not supported. Try Chrome or Edge.');
+      setError(lang === 'pt'
+        ? 'Reconhecimento de voz não suportado. Use Chrome ou Edge.'
+        : 'Speech recognition not supported. Try Chrome or Edge.');
       return;
     }
 
+    // Enable continuous mode so it keeps listening
+    recognition.continuous = true;
+    recognition.interimResults = true;
     recognitionRef.current = recognition;
     let finalTranscript = '';
+    let stoppedManually = false;
 
     recognition.onresult = (event: any) => {
       let interim = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      finalTranscript = '';
+      for (let i = 0; i < event.results.length; i++) {
         const result = event.results[i];
         if (result.isFinal) {
           finalTranscript += result[0].transcript + ' ';
@@ -152,31 +160,36 @@ export default function SessionView() {
     };
 
     recognition.onend = () => {
-      const text = finalTranscript.trim();
+      const text = (finalTranscript || '').trim();
       setRecording(false);
       setInterimText('');
 
-      if (text) {
+      if (text && stoppedManually) {
         const userTurn: Turn = { speaker: 'user', text };
         setTurns((prev) => {
           const updated = [...prev, userTurn];
-          // Trigger AI response with the new turns
           setTimeout(() => getAIResponse(updated), 100);
           return updated;
         });
+      } else if (!stoppedManually) {
+        // Browser auto-stopped (timeout) — restart if still recording
+        try { recognition.start(); } catch { /* already stopped */ }
       }
     };
 
     recognition.onerror = (event: any) => {
-      if (event.error !== 'aborted') {
-        setError(`Speech error: ${event.error}`);
-      }
+      if (event.error === 'aborted' || event.error === 'no-speech') return;
+      setError(`Speech: ${event.error}`);
       setRecording(false);
       setInterimText('');
     };
 
     recognition.start();
     setRecording(true);
+
+    // Override stop to set flag
+    const origStop = recognition.stop.bind(recognition);
+    recognition.stop = () => { stoppedManually = true; origStop(); };
   }, [getAIResponse]);
 
   const stopRecording = useCallback(() => {
