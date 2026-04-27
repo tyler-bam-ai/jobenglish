@@ -110,10 +110,10 @@ export default function SessionView() {
 
         setAiThinking(false);
 
-        // Speak the response
+        // Speak the response (non-blocking)
         if (aiText) {
           setAiSpeaking(true);
-          await speakWithAI(aiText, () => setAiSpeaking(false));
+          speakWithAI(aiText, () => setAiSpeaking(false));
         }
       } catch (err) {
         setAiThinking(false);
@@ -124,8 +124,10 @@ export default function SessionView() {
   );
 
   const startRecording = useCallback(() => {
+    // Interrupt AI if it's speaking
     stopSpeaking();
     setAiSpeaking(false);
+    setAiThinking(false);
     setInterimText('');
     setRecTime(0);
     setError('');
@@ -393,11 +395,11 @@ export default function SessionView() {
 
         <button
           onClick={handleMic}
-          disabled={aiThinking || aiSpeaking}
+          disabled={aiThinking}
           style={{
             width: 56, height: 56, borderRadius: '50%',
-            background: recording ? '#1F1A14' : aiThinking || aiSpeaking ? '#8A7C6E' : '#C8553D',
-            border: 'none', cursor: aiThinking || aiSpeaking ? 'wait' : 'pointer',
+            background: recording ? '#1F1A14' : aiThinking ? '#8A7C6E' : '#C8553D',
+            border: 'none', cursor: aiThinking ? 'wait' : 'pointer',
             color: '#FFF8EC', boxShadow: '0 6px 16px #C8553D44',
             display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
           }}
