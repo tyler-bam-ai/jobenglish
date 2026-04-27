@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
+import { setGoal } from '@/lib/onboarding-store';
 
 const GOALS = [
   { id: 'tech', label: 'Entrevista tech', sub: 'Backend, frontend, system design', icon: '\u25C6' },
@@ -141,7 +142,7 @@ export default function GoalPage() {
         })}
       </div>
 
-      <Btn variant="accent" onClick={() => router.push('/onboarding/consent')} style={{ marginTop: 16 }}>
+      <Btn variant="accent" onClick={() => { setGoal(picked); router.push('/onboarding/consent'); }} style={{ marginTop: 16 }}>
         Continuar &rarr;
       </Btn>
     </div>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
 import { Waveform } from '@/components/ui/waveform';
+import { setDiagnosticCompleted } from '@/lib/onboarding-store';
 
 export default function DiagnosticPage() {
   const router = useRouter();
@@ -211,7 +212,7 @@ export default function DiagnosticPage() {
       <Btn
         variant="accent"
         onClick={() => {
-          if (done) router.push('/dashboard');
+          if (done) { setDiagnosticCompleted(); router.push('/dashboard'); }
         }}
         style={{
           marginTop: 14,

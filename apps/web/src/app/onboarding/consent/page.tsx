@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
+import { setConsents } from '@/lib/onboarding-store';
 
 const CONSENTS = [
   { id: 'voice', label: 'Aceito o processamento da minha voz para análise de inglês.', required: true },
@@ -173,7 +174,7 @@ export default function ConsentPage() {
       <Btn
         variant={allRequired ? 'accent' : 'primary'}
         onClick={() => {
-          if (allRequired) router.push('/onboarding/diagnostic');
+          if (allRequired) { setConsents(accepted); router.push('/onboarding/diagnostic'); }
         }}
         style={{
           marginTop: 16,

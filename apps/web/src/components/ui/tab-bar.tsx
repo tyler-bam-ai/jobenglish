@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 const TABS = [
   { label: 'Início', icon: '\u25C9', href: '/dashboard' },
-  { label: 'Praticar', icon: '\u25D0', href: '/session/demo' },
-  { label: 'Progresso', icon: '\u25B2', href: '/dashboard' },
+  { label: 'Praticar', icon: '\u25D0', href: '/scenarios' },
+  { label: 'Progresso', icon: '\u25B2', href: '/progress' },
   { label: 'Perfil', icon: '\u25CB', href: '/dashboard' },
 ];
 

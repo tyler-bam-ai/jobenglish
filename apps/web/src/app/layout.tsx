@@ -38,7 +38,7 @@ export default function RootLayout({
             className="w-full"
             style={{ maxWidth: 392, minHeight: '100vh' }}
           >
-            {children}
+            <div className="page-enter">{children}</div>
           </div>
         </div>
       </body>
