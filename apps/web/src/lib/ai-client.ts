@@ -1,5 +1,5 @@
 const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '';
-const MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'qwen/qwen3-max-preview';
+const MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'qwen/qwen3.6-max-preview';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';

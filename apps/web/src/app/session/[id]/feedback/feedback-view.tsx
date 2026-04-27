@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useLang, t } from '@/lib/i18n';
 import { generateFeedback } from '@/lib/ai-client';
+import { recordSession } from '@/lib/user-stats';
 import { RadarChart } from '@/components/feedback/radar-chart';
 import { CorrectionCard } from '@/components/feedback/correction-card';
 import { Btn } from '@/components/ui/button';
@@ -50,6 +51,22 @@ export default function FeedbackView() {
       .then((fb) => {
         setFeedback(fb);
         setLoading(false);
+
+        // Record the session in persistent stats
+        const startTime = parseInt(sessionStorage.getItem('sessionStartTime') || '0', 10);
+        const duration = startTime ? Math.round((Date.now() - startTime) / 1000) : 300;
+        recordSession(
+          duration,
+          {
+            fluency: fb.scores.fluency || 0,
+            grammar: fb.scores.grammar || 0,
+            vocabulary: fb.scores.vocabulary || 0,
+            clarity: fb.scores.clarity || 0,
+            pronunciation: fb.scores.pronunciation || 0,
+          },
+          fb.cefrEstimate,
+          scenarioId,
+        );
       })
       .catch((err) => {
         setError(err.message);

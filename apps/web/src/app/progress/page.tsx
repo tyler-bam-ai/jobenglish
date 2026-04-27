@@ -1,26 +1,50 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Wordmark } from '@/components/ui/wordmark';
 import { TabBar } from '@/components/ui/tab-bar';
 import { useLang, t } from '@/lib/i18n';
+import { getStats, type UserStats } from '@/lib/user-stats';
 
-const SCORES = [
-  { weekNum: 1, value: 63 },
-  { weekNum: 2, value: 68 },
-  { weekNum: 3, value: 72 },
-  { weekNum: 4, value: 74 },
-];
-
-const SKILLS = [
-  { labelKey: 'fluency' as const, value: 72, color: '#C8553D' },
-  { labelKey: 'grammar' as const, value: 65, color: '#D97A2B' },
-  { labelKey: 'vocabulary' as const, value: 78, color: '#E8A23A' },
-  { labelKey: 'clarity' as const, value: 70, color: '#1F3147' },
-  { labelKey: 'pronunciation' as const, value: 60, color: '#5E7A4F' },
+const SKILL_META: { labelKey: 'fluency' | 'grammar' | 'vocabulary' | 'clarity' | 'pronunciation'; color: string }[] = [
+  { labelKey: 'fluency', color: '#C8553D' },
+  { labelKey: 'grammar', color: '#D97A2B' },
+  { labelKey: 'vocabulary', color: '#E8A23A' },
+  { labelKey: 'clarity', color: '#1F3147' },
+  { labelKey: 'pronunciation', color: '#5E7A4F' },
 ];
 
 export default function ProgressPage() {
   const { lang } = useLang();
+  const [stats, setStats] = useState<UserStats | null>(null);
+
+  useEffect(() => {
+    setStats(getStats());
+  }, []);
+
+  if (!stats) return null;
+
+  const hasData = stats.sessionsCompleted > 0;
+  const weeklyPct = stats.weeklyGoalMinutes > 0
+    ? Math.min(100, Math.round((stats.weeklyMinutes / stats.weeklyGoalMinutes) * 100))
+    : 0;
+  const remaining = Math.max(0, stats.weeklyGoalMinutes - stats.weeklyMinutes);
+
+  // Build score trend from latestScores — compute average per session
+  const scoreTrend = stats.latestScores.map((s, i) => {
+    const avg = Math.round((s.fluency + s.grammar + s.vocabulary + s.clarity + s.pronunciation) / 5);
+    return { sessionNum: i + 1, value: avg };
+  });
+
+  // Latest skills (most recent score set)
+  const latestSkills = stats.latestScores.length > 0
+    ? stats.latestScores[stats.latestScores.length - 1]
+    : null;
+
+  // Empty state message
+  const emptyMsg = lang === 'pt'
+    ? 'Complete sua primeira sess\u00e3o para ver seu progresso aqui.'
+    : 'Complete your first session to see your progress here.';
 
   return (
     <div
@@ -79,6 +103,43 @@ export default function ProgressPage() {
         </h2>
       </div>
 
+      {/* Empty state banner when no sessions */}
+      {!hasData && (
+        <div style={{ padding: '20px 22px 0' }}>
+          <div
+            style={{
+              padding: '20px 16px',
+              borderRadius: 14,
+              background: '#FFFCF6',
+              border: '1px dashed #E7DCC9',
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "var(--font-display), 'Fraunces', 'Cooper', Georgia, serif",
+                fontSize: 18,
+                color: '#1F1A14',
+                fontWeight: 500,
+                marginBottom: 6,
+              }}
+            >
+              {lang === 'pt' ? 'Nenhuma sess\u00e3o ainda' : 'No sessions yet'}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                color: '#8A7C6E',
+                lineHeight: 1.4,
+              }}
+            >
+              {emptyMsg}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Weekly speaking minutes */}
       <div style={{ padding: '16px 22px 0' }}>
         <div
@@ -109,7 +170,7 @@ export default function ProgressPage() {
                 fontWeight: 600,
               }}
             >
-              18
+              {stats.weeklyMinutes}
             </span>
             <span
               style={{
@@ -118,7 +179,7 @@ export default function ProgressPage() {
                 color: '#8A7C6E',
               }}
             >
-              / 45 min
+              / {stats.weeklyGoalMinutes} min
             </span>
           </div>
           <div
@@ -132,7 +193,7 @@ export default function ProgressPage() {
           >
             <div
               style={{
-                width: '40%',
+                width: `${weeklyPct}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, #E8A23A, #C8553D)',
                 borderRadius: 4,
@@ -147,7 +208,11 @@ export default function ProgressPage() {
               marginTop: 6,
             }}
           >
-            {t.moreMinutesToCloseWeek[lang]}
+            {remaining > 0
+              ? (lang === 'pt'
+                  ? `Mais ${remaining} minutos para fechar a semana`
+                  : `${remaining} more minutes to close the week`)
+              : (lang === 'pt' ? 'Meta semanal atingida!' : 'Weekly goal reached!')}
           </div>
         </div>
       </div>
@@ -182,7 +247,7 @@ export default function ProgressPage() {
                 fontWeight: 600,
               }}
             >
-              3
+              {stats.weeklySessionCount}
             </span>
             <span
               style={{
@@ -223,7 +288,7 @@ export default function ProgressPage() {
                 fontWeight: 600,
               }}
             >
-              7
+              {stats.streakDays}
             </span>
             <span
               style={{
@@ -260,56 +325,72 @@ export default function ProgressPage() {
           >
             {t.scoreTrendLabel[lang]}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {SCORES.map((s) => (
-              <div key={s.weekNum} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
-                    fontSize: 10,
-                    color: '#8A7C6E',
-                    width: 42,
-                    flexShrink: 0,
-                  }}
-                >
-                  {t.week[lang]} {s.weekNum}
-                </span>
-                <div
-                  style={{
-                    flex: 1,
-                    height: 22,
-                    borderRadius: 6,
-                    background: '#F1E8D9',
-                    overflow: 'hidden',
-                    position: 'relative',
-                  }}
-                >
+          {scoreTrend.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {scoreTrend.map((s) => (
+                <div key={s.sessionNum} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
+                      fontSize: 10,
+                      color: '#8A7C6E',
+                      width: 42,
+                      flexShrink: 0,
+                    }}
+                  >
+                    #{s.sessionNum}
+                  </span>
                   <div
                     style={{
-                      width: `${s.value}%`,
-                      height: '100%',
-                      background: 'linear-gradient(90deg, #E8A23A, #C8553D)',
+                      flex: 1,
+                      height: 22,
                       borderRadius: 6,
-                      transition: 'width 0.5s ease',
+                      background: '#F1E8D9',
+                      overflow: 'hidden',
+                      position: 'relative',
                     }}
-                  />
+                  >
+                    <div
+                      style={{
+                        width: `${s.value}%`,
+                        height: '100%',
+                        background: 'linear-gradient(90deg, #E8A23A, #C8553D)',
+                        borderRadius: 6,
+                        transition: 'width 0.5s ease',
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-display), 'Fraunces', 'Cooper', Georgia, serif",
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#1F1A14',
+                      width: 28,
+                      textAlign: 'right',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {s.value}
+                  </span>
                 </div>
-                <span
-                  style={{
-                    fontFamily: "var(--font-display), 'Fraunces', 'Cooper', Georgia, serif",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: '#1F1A14',
-                    width: 28,
-                    textAlign: 'right',
-                    flexShrink: 0,
-                  }}
-                >
-                  {s.value}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                color: '#8A7C6E',
+                textAlign: 'center',
+                padding: '14px 0',
+              }}
+            >
+              {lang === 'pt'
+                ? 'Complete sess\u00f5es para ver sua tend\u00eancia de score.'
+                : 'Complete sessions to see your score trend.'}
+            </div>
+          )}
         </div>
       </div>
 
@@ -337,56 +418,73 @@ export default function ProgressPage() {
             gap: 14,
           }}
         >
-          {SKILLS.map((skill) => (
-            <div key={skill.labelKey}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'baseline',
-                  marginBottom: 6,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: '#1F1A14',
-                  }}
-                >
-                  {t[skill.labelKey][lang]}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
-                    fontSize: 12,
-                    color: '#5C5046',
-                  }}
-                >
-                  {skill.value}%
-                </span>
-              </div>
-              <div
-                style={{
-                  height: 6,
-                  borderRadius: 3,
-                  background: '#F1E8D9',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    width: `${skill.value}%`,
-                    height: '100%',
-                    background: skill.color,
-                    borderRadius: 3,
-                    transition: 'width 0.5s ease',
-                  }}
-                />
-              </div>
+          {latestSkills ? (
+            SKILL_META.map((skill) => {
+              const value = latestSkills[skill.labelKey] || 0;
+              return (
+                <div key={skill.labelKey}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'baseline',
+                      marginBottom: 6,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: '#1F1A14',
+                      }}
+                    >
+                      {t[skill.labelKey][lang]}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
+                        fontSize: 12,
+                        color: '#5C5046',
+                      }}
+                    >
+                      {value}%
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: 6,
+                      borderRadius: 3,
+                      background: '#F1E8D9',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${value}%`,
+                        height: '100%',
+                        background: skill.color,
+                        borderRadius: 3,
+                        transition: 'width 0.5s ease',
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div
+              style={{
+                fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                fontSize: 13,
+                color: '#8A7C6E',
+                textAlign: 'center',
+                padding: '14px 0',
+              }}
+            >
+              {emptyMsg}
             </div>
-          ))}
+          )}
         </div>
       </div>
 

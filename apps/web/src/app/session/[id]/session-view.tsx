@@ -45,6 +45,11 @@ export default function SessionView() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [turns, interimText, aiThinking]);
 
+  // Store session start time for duration tracking
+  useEffect(() => {
+    sessionStorage.setItem('sessionStartTime', Date.now().toString());
+  }, []);
+
   // Start session — get AI's opening message
   useEffect(() => {
     if (!scenario || turns.length > 0) return;

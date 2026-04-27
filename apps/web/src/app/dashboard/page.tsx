@@ -1,21 +1,52 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Wordmark } from '@/components/ui/wordmark';
 import { Tag } from '@/components/ui/tag';
 import { Sun } from '@/components/ui/sun';
 import { TabBar } from '@/components/ui/tab-bar';
 import { useLang, t } from '@/lib/i18n';
+import { getStats, cefrLabel, type UserStats } from '@/lib/user-stats';
+import { SCENARIOS } from '@/lib/scenarios';
 
 const TRACK_ITEMS = [
-  { i: '01', t: 'Tell me about yourself', d: '5 min', done: true, active: false },
-  { i: '02', t: 'Explain a backend project', d: '7 min', done: false, active: true },
-  { i: '03', t: 'Debugging challenge', d: '7 min', done: false, active: false },
-  { i: '04', t: 'System design basics', d: '12 min', done: false, active: false },
+  { i: '01', scenarioId: '1', t: 'Tell me about yourself', d: '5 min' },
+  { i: '02', scenarioId: '2', t: 'Explain a backend project', d: '7 min' },
+  { i: '03', scenarioId: '3', t: 'Daily standup update', d: '3 min' },
+  { i: '04', scenarioId: '4', t: 'Explaining a blocker', d: '5 min' },
 ];
 
 export default function DashboardPage() {
   const { lang } = useLang();
+  const [stats, setStats] = useState<UserStats | null>(null);
+
+  useEffect(() => {
+    setStats(getStats());
+  }, []);
+
+  // During SSR or before hydration, render nothing to avoid mismatch
+  if (!stats) return null;
+
+  const hasData = stats.sessionsCompleted > 0;
+  const weeklyPct = stats.weeklyGoalMinutes > 0
+    ? Math.min(100, Math.round((stats.weeklyMinutes / stats.weeklyGoalMinutes) * 100))
+    : 0;
+  const remaining = Math.max(0, stats.weeklyGoalMinutes - stats.weeklyMinutes);
+
+  // Determine the next scenario to practice
+  const nextScenario = SCENARIOS.find((s) => !stats.completedScenarioIds.includes(s.id)) || SCENARIOS[0];
+
+  // Level improvement indicator — show only when we have 2+ score sets to compare
+  const showLevelUp = stats.latestScores.length > 1;
+  let levelDelta = 0;
+  if (showLevelUp) {
+    const prev = stats.latestScores[stats.latestScores.length - 2];
+    const curr = stats.latestScores[stats.latestScores.length - 1];
+    const avgPrev = (prev.fluency + prev.grammar + prev.vocabulary + prev.clarity + prev.pronunciation) / 5;
+    const avgCurr = (curr.fluency + curr.grammar + curr.vocabulary + curr.clarity + curr.pronunciation) / 5;
+    levelDelta = Math.round((avgCurr - avgPrev) * 10) / 10;
+  }
 
   return (
     <div
@@ -113,18 +144,20 @@ export default function DashboardPage() {
                 fontWeight: 600,
               }}
             >
-              B1
+              {stats.cefrLevel || '\u2014'}
             </span>
-            <span
-              style={{
-                fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
-                fontSize: 11,
-                color: '#5E7A4F',
-                fontWeight: 600,
-              }}
-            >
-              &#8593; +0.3
-            </span>
+            {showLevelUp && levelDelta !== 0 && (
+              <span
+                style={{
+                  fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                  fontSize: 11,
+                  color: levelDelta > 0 ? '#5E7A4F' : '#C8553D',
+                  fontWeight: 600,
+                }}
+              >
+                {levelDelta > 0 ? '\u2191' : '\u2193'} {levelDelta > 0 ? '+' : ''}{levelDelta}
+              </span>
+            )}
           </div>
           <div
             style={{
@@ -134,7 +167,7 @@ export default function DashboardPage() {
               marginTop: 2,
             }}
           >
-            {t.intermediate[lang]}
+            {hasData ? cefrLabel(stats.cefrLevel, lang) : (lang === 'pt' ? 'fa\u00e7a uma sess\u00e3o' : 'complete a session')}
           </div>
         </div>
 
@@ -165,7 +198,7 @@ export default function DashboardPage() {
                 fontWeight: 600,
               }}
             >
-              7
+              {stats.streakDays}
             </span>
             <span
               style={{
@@ -186,7 +219,9 @@ export default function DashboardPage() {
               marginTop: 2,
             }}
           >
-            {t.keepGoing[lang]}
+            {stats.streakDays > 0
+              ? t.keepGoing[lang]
+              : (lang === 'pt' ? 'comece hoje' : 'start today')}
           </div>
         </div>
       </div>
@@ -205,7 +240,7 @@ export default function DashboardPage() {
           {t.todayPractice[lang]}
         </div>
         <Link
-          href="/session/2"
+          href={`/session/${nextScenario.id}`}
           style={{
             display: 'block',
             width: '100%',
@@ -232,7 +267,7 @@ export default function DashboardPage() {
               }}
             >
               <Tag color="#FFF8EC" bg="#FFF8EC22">
-                TECH INTERVIEW
+                {nextScenario.careerTrack.toUpperCase()}
               </Tag>
               <span
                 style={{
@@ -242,7 +277,7 @@ export default function DashboardPage() {
                   color: '#FFF8EC',
                 }}
               >
-                ~ 7 min
+                ~ {nextScenario.estimatedMinutes} min
               </span>
             </div>
             <div
@@ -256,7 +291,7 @@ export default function DashboardPage() {
                 color: '#FFF8EC',
               }}
             >
-              Explain a backend project <span style={{ fontStyle: 'italic' }}>you&apos;ve built.</span>
+              {nextScenario.title}
             </div>
             <div
               style={{
@@ -327,7 +362,7 @@ export default function DashboardPage() {
                 color: '#5C5046',
               }}
             >
-              <strong style={{ color: '#1F1A14' }}>18</strong> / 45 min
+              <strong style={{ color: '#1F1A14' }}>{stats.weeklyMinutes}</strong> / {stats.weeklyGoalMinutes} min
             </span>
           </div>
           <div
@@ -341,7 +376,7 @@ export default function DashboardPage() {
           >
             <div
               style={{
-                width: '40%',
+                width: `${weeklyPct}%`,
                 height: '100%',
                 background: 'linear-gradient(90deg, #E8A23A, #C8553D)',
                 borderRadius: 4,
@@ -356,7 +391,11 @@ export default function DashboardPage() {
               marginTop: 6,
             }}
           >
-            {t.weeklyRemaining[lang]}
+            {remaining > 0
+              ? (lang === 'pt'
+                  ? `Mais ${remaining} minutos para fechar a semana`
+                  : `${remaining} more minutes to close the week`)
+              : (lang === 'pt' ? 'Meta semanal atingida!' : 'Weekly goal reached!')}
           </div>
         </div>
       </div>
@@ -374,62 +413,66 @@ export default function DashboardPage() {
         >
           {t.track[lang]}
         </div>
-        {TRACK_ITEMS.map((s) => (
-          <div
-            key={s.i}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              padding: '12px 4px',
-              borderBottom: '1px solid #E7DCC9',
-            }}
-          >
+        {TRACK_ITEMS.map((s) => {
+          const done = stats.completedScenarioIds.includes(s.scenarioId);
+          const active = !done && s.scenarioId === nextScenario.id;
+          return (
             <div
+              key={s.i}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                flexShrink: 0,
-                background: s.done ? '#5E7A4F' : s.active ? '#C8553D' : '#F1E8D9',
-                color: s.done || s.active ? '#FFF8EC' : '#8A7C6E',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
-                fontSize: 11,
-                fontWeight: 600,
+                gap: 12,
+                padding: '12px 4px',
+                borderBottom: '1px solid #E7DCC9',
               }}
             >
-              {s.done ? '\u2713' : s.i}
-            </div>
-            <div style={{ flex: 1 }}>
               <div
                 style={{
-                  fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: '#1F1A14',
-                  opacity: s.done ? 0.5 : 1,
-                  textDecoration: s.done ? 'line-through' : 'none',
-                }}
-              >
-                {s.t}
-              </div>
-              <div
-                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  flexShrink: 0,
+                  background: done ? '#5E7A4F' : active ? '#C8553D' : '#F1E8D9',
+                  color: done || active ? '#FFF8EC' : '#8A7C6E',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
-                  fontSize: 10,
-                  color: '#8A7C6E',
-                  letterSpacing: 0.5,
+                  fontSize: 11,
+                  fontWeight: 600,
                 }}
               >
-                {s.d}
+                {done ? '\u2713' : s.i}
               </div>
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: '#1F1A14',
+                    opacity: done ? 0.5 : 1,
+                    textDecoration: done ? 'line-through' : 'none',
+                  }}
+                >
+                  {s.t}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
+                    fontSize: 10,
+                    color: '#8A7C6E',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {s.d}
+                </div>
+              </div>
+              {active && <span style={{ fontSize: 14, color: '#C8553D' }}>&rarr;</span>}
             </div>
-            {s.active && <span style={{ fontSize: 14, color: '#C8553D' }}>&rarr;</span>}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div style={{ height: 80 }} />

@@ -82,7 +82,7 @@ body {
 }
 
 .page-enter {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.15s ease-out;
 }
 
 /* App container — fills full width at all sizes */
