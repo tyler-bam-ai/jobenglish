@@ -205,7 +205,7 @@ export default function DashboardPage() {
           {t.todayPractice[lang]}
         </div>
         <Link
-          href="/session/demo"
+          href="/session/2"
           style={{
             display: 'block',
             width: '100%',

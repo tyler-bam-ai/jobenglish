@@ -6,7 +6,8 @@ import { Tag } from '@/components/ui/tag';
 import { TabBar } from '@/components/ui/tab-bar';
 import { useLang, t } from '@/lib/i18n';
 
-interface Scenario {
+interface ScenarioItem {
+  id: string;
   title: string;
   titlePt: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
@@ -20,7 +21,7 @@ const TRACKS: {
   icon: string;
   tagColor: string;
   tagBg: string;
-  scenarios: Scenario[];
+  scenarios: ScenarioItem[];
 }[] = [
   {
     key: 'tech',
@@ -29,8 +30,8 @@ const TRACKS: {
     tagColor: '#C8553D',
     tagBg: '#C8553D15',
     scenarios: [
-      { title: 'Tell me about yourself', titlePt: 'Fale sobre voc\u00EA', difficulty: 'beginner', minutes: 5, aiRole: 'Sarah, Senior Recruiter' },
-      { title: 'Explain a backend project', titlePt: 'Explique um projeto backend', difficulty: 'intermediate', minutes: 7, aiRole: 'Marcus, Tech Interviewer' },
+      { id: '1', title: 'Tell me about yourself', titlePt: 'Fale sobre você', difficulty: 'beginner', minutes: 5, aiRole: 'Sarah, Senior Recruiter' },
+      { id: '2', title: 'Explain a backend project', titlePt: 'Explique um projeto backend', difficulty: 'intermediate', minutes: 7, aiRole: 'Marcus, Tech Interviewer' },
     ],
   },
   {
@@ -40,8 +41,8 @@ const TRACKS: {
     tagColor: '#1F3147',
     tagBg: '#1F314715',
     scenarios: [
-      { title: 'Daily standup update', titlePt: 'Atualiza\u00E7\u00E3o no standup', difficulty: 'beginner', minutes: 3, aiRole: 'James, Engineering Manager' },
-      { title: 'Explaining a blocker', titlePt: 'Explicando um bloqueio', difficulty: 'intermediate', minutes: 5, aiRole: 'Emily, Product Manager' },
+      { id: '3', title: 'Daily standup update', titlePt: 'Atualização no standup', difficulty: 'beginner', minutes: 3, aiRole: 'James, Engineering Manager' },
+      { id: '4', title: 'Explaining a blocker', titlePt: 'Explicando um bloqueio', difficulty: 'intermediate', minutes: 5, aiRole: 'Emily, Product Manager' },
     ],
   },
   {
@@ -51,8 +52,8 @@ const TRACKS: {
     tagColor: '#D97A2B',
     tagBg: '#D97A2B15',
     scenarios: [
-      { title: 'Present dashboard insights', titlePt: 'Insights de dashboard', difficulty: 'intermediate', minutes: 7, aiRole: 'David, VP of Product' },
-      { title: 'Explain model accuracy', titlePt: 'Acur\u00E1cia do modelo', difficulty: 'advanced', minutes: 7, aiRole: 'Lisa, Chief Data Officer' },
+      { id: '5', title: 'Present dashboard insights', titlePt: 'Insights de dashboard', difficulty: 'intermediate', minutes: 7, aiRole: 'David, VP of Product' },
+      { id: '6', title: 'Explain model accuracy', titlePt: 'Acurácia do modelo', difficulty: 'advanced', minutes: 7, aiRole: 'Lisa, Chief Data Officer' },
     ],
   },
   {
@@ -62,8 +63,8 @@ const TRACKS: {
     tagColor: '#5E7A4F',
     tagBg: '#5E7A4F15',
     scenarios: [
-      { title: 'Handle an angry customer', titlePt: 'Cliente irritado', difficulty: 'intermediate', minutes: 5, aiRole: 'Robert, Angry Customer' },
-      { title: 'Technical troubleshooting', titlePt: 'Troubleshooting t\u00E9cnico', difficulty: 'intermediate', minutes: 7, aiRole: 'Karen, Customer' },
+      { id: '7', title: 'Handle an angry customer', titlePt: 'Cliente irritado', difficulty: 'intermediate', minutes: 5, aiRole: 'Robert, Angry Customer' },
+      { id: '8', title: 'Technical troubleshooting', titlePt: 'Troubleshooting técnico', difficulty: 'intermediate', minutes: 7, aiRole: 'Karen, Customer' },
     ],
   },
   {
@@ -73,8 +74,8 @@ const TRACKS: {
     tagColor: '#E8A23A',
     tagBg: '#E8A23A15',
     scenarios: [
-      { title: 'Discovery call', titlePt: 'Chamada de discovery', difficulty: 'intermediate', minutes: 7, aiRole: 'Alex, VP of Engineering' },
-      { title: 'Handle a pricing objection', titlePt: 'Obje\u00E7\u00E3o de pre\u00E7o', difficulty: 'advanced', minutes: 5, aiRole: 'Michelle, Procurement Director' },
+      { id: '9', title: 'Discovery call', titlePt: 'Chamada de discovery', difficulty: 'intermediate', minutes: 7, aiRole: 'Alex, VP of Engineering' },
+      { id: '10', title: 'Handle a pricing objection', titlePt: 'Objeção de preço', difficulty: 'advanced', minutes: 5, aiRole: 'Michelle, Procurement Director' },
     ],
   },
 ];
@@ -178,8 +179,8 @@ export default function ScenariosPage() {
                 const diff = DIFFICULTY_MAP[scenario.difficulty];
                 return (
                   <Link
-                    key={scenario.title}
-                    href="/session/demo"
+                    key={scenario.id}
+                    href={`/session/${scenario.id}`}
                     style={{ textDecoration: 'none', color: 'inherit' }}
                   >
                     <div

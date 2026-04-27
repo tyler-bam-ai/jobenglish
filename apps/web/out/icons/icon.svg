@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="108" fill="#C8553D"/>
-  <text x="256" y="220" text-anchor="middle" font-family="Georgia, serif" font-size="140" font-weight="600" font-style="italic" fill="#FFF8EC">job</text>
-  <text x="256" y="360" text-anchor="middle" font-family="Georgia, serif" font-size="120" font-weight="600" fill="#FFF8EC">English</text>
-  <text x="420" y="160" text-anchor="middle" font-family="monospace" font-size="60" font-weight="500" fill="#E8A23A">BR</text>
-</svg>

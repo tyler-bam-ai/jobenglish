@@ -33,7 +33,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
           gap: 6,
         }}
       >
-        <span style={{ fontSize: 14 }}>{lang === 'pt' ? '🇧🇷' : '🇺🇸'}</span>
+        <span style={{ fontSize: 14 }}>{lang === 'pt' ? '🇺🇸' : '🇧🇷'}</span>
         {lang === 'pt' ? 'EN' : 'PT'}
       </button>
     </LangContext.Provider>
