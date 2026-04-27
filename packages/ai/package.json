@@ -1,0 +1,19 @@
+{
+  "name": "@jobenglish/ai",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'no lint configured'"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "@deepgram/sdk": "^3.11.0",
+    "openai": "^5.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}

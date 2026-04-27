@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #F7F1E8;
+  --color-bg-deep: #F1E8D9;
+  --color-card: #FFFCF6;
+  --color-ink: #1F1A14;
+  --color-ink2: #5C5046;
+  --color-ink3: #8A7C6E;
+  --color-hairline: #E7DCC9;
+  --color-terracotta: #C8553D;
+  --color-sun: #E8A23A;
+  --color-mango: #D97A2B;
+  --color-navy: #1F3147;
+  --color-leaf: #5E7A4F;
+  --color-blush: #F2D9C9;
+  --color-sky: #CDDDE6;
+  --color-cream: #FFF8EC;
+
+  --font-display: var(--font-display), 'Fraunces', 'Cooper', Georgia, serif;
+  --font-body: var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif;
+  --font-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background: #F7F1E8;
+  color: #1F1A14;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Animations from handoff */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes pulse-0 {
+  from { transform: scaleY(0.7); }
+  to { transform: scaleY(1.2); }
+}
+
+@keyframes pulse-1 {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0.5); }
+}
+
+@keyframes pulse-2 {
+  from { transform: scaleY(0.5); }
+  to { transform: scaleY(1.4); }
+}
+
+@keyframes pulse-3 {
+  from { transform: scaleY(1.2); }
+  to { transform: scaleY(0.8); }
+}
+
+/* Details summary reset */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary {
+  list-style: none;
+}

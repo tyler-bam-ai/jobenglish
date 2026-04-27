@@ -1,0 +1,26 @@
+{
+  "name": "jobenglish",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=@jobenglish/web",
+    "dev:api": "turbo dev --filter=@jobenglish/api",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "db:push": "pnpm --filter @jobenglish/db push",
+    "db:seed": "pnpm --filter @jobenglish/db seed",
+    "db:generate": "pnpm --filter @jobenglish/db generate"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.0"
+  },
+  "packageManager": "pnpm@10.8.1",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
