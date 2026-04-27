@@ -5,8 +5,10 @@ import { Wordmark } from '@/components/ui/wordmark';
 import { Btn } from '@/components/ui/button';
 import { Tag } from '@/components/ui/tag';
 import { Sun } from '@/components/ui/sun';
+import { useLang, t } from '@/lib/i18n';
 
 export default function WelcomePage() {
+  const { lang } = useLang();
   return (
     <div
       style={{
@@ -66,7 +68,7 @@ export default function WelcomePage() {
             marginBottom: 14,
           }}
         >
-          &#9473;&#9473; SEU SIMULADOR DE INGLÊS PROFISSIONAL
+          {t.tagline[lang]}
         </div>
         <h1
           style={{
@@ -79,9 +81,9 @@ export default function WelcomePage() {
             letterSpacing: -1.5,
           }}
         >
-          Treine o inglês{' '}
+          {t.heroTitle1[lang]}{' '}
           <span style={{ fontStyle: 'italic', color: '#C8553D' }}>
-            que sua carreira precisa.
+            {t.heroTitle2[lang]}
           </span>
         </h1>
         <p
@@ -95,8 +97,7 @@ export default function WelcomePage() {
             maxWidth: 300,
           }}
         >
-          Simule entrevistas, reuniões e apresentações em inglês com IA — e receba feedback em
-          português.
+          {t.heroSub[lang]}
         </p>
       </div>
 
@@ -104,13 +105,13 @@ export default function WelcomePage() {
       <div style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <Link href="/onboarding/goal" style={{ textDecoration: 'none' }}>
           <Btn variant="accent">
-            Começar diagnóstico grátis
+            {t.ctaStart[lang]}
             <span style={{ fontSize: 18, marginLeft: 4 }}>&rarr;</span>
           </Btn>
         </Link>
         <Link href="/onboarding/goal" style={{ textDecoration: 'none' }}>
           <Btn variant="quiet" size="md">
-            Já tenho conta &middot; Entrar
+            {t.ctaLogin[lang]}
           </Btn>
         </Link>
       </div>
@@ -142,7 +143,7 @@ export default function WelcomePage() {
             />
           ))}
         </div>
-        <span>+312 brasileiros praticaram esta semana</span>
+        <span>{t.socialProof[lang]}</span>
       </div>
     </div>
   );

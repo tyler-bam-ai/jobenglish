@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { fraunces, manrope, jetbrainsMono } from '@/lib/fonts';
+import { LangProvider } from '@/components/lang-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -33,14 +34,11 @@ export default function RootLayout({
           fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
         }}
       >
-        <div className="flex min-h-screen items-start justify-center">
-          <div
-            className="w-full"
-            style={{ maxWidth: 392, minHeight: '100vh' }}
-          >
+        <LangProvider>
+          <div className="app-container">
             <div className="page-enter">{children}</div>
           </div>
-        </div>
+        </LangProvider>
       </body>
     </html>
   );
