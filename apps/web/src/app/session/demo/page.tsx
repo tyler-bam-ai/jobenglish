@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AiMessage } from '@/components/session/ai-message';
 import { UserMessage } from '@/components/session/user-message';
 import { Waveform } from '@/components/ui/waveform';
+import { useLang, t } from '@/lib/i18n';
 
 const ROLEPLAY_TURNS = [
   {
@@ -26,6 +27,7 @@ const ROLEPLAY_TURNS = [
 
 export default function RoleplayPage() {
   const router = useRouter();
+  const { lang } = useLang();
   const [turn, setTurn] = useState(0);
   const [recording, setRecording] = useState(false);
   const [recTime, setRecTime] = useState(0);
@@ -96,7 +98,7 @@ export default function RoleplayPage() {
               color: '#E8A23A',
             }}
           >
-            &#9679; AO VIVO &middot; IA ROLEPLAY
+            {t.liveRoleplay[lang]}
           </div>
           <div
             style={{
@@ -183,7 +185,7 @@ export default function RoleplayPage() {
                   display: 'inline-block',
                 }}
               />
-              ESCUTANDO...{' '}
+              {t.listening[lang]}{' '}
               {String(Math.floor(recTime / 60)).padStart(2, '0')}:
               {String(recTime % 60).padStart(2, '0')}
             </div>
@@ -201,7 +203,7 @@ export default function RoleplayPage() {
           scrollbarWidth: 'none',
         }}
       >
-        {['\u21BB Repetir', '\u21B7 Traduzir', '\u25C6 Dica', '\u266A Mais devagar'].map((c) => (
+        {[t.repeat[lang], t.translate[lang], t.hint[lang], t.slower[lang]].map((c) => (
           <button
             key={c}
             style={{
@@ -243,7 +245,7 @@ export default function RoleplayPage() {
             whiteSpace: 'nowrap',
           }}
         >
-          Finalizar
+          {t.finish[lang]}
         </button>
 
         <div

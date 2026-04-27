@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Wordmark } from '@/components/ui/wordmark';
 import { Tag } from '@/components/ui/tag';
 import { TabBar } from '@/components/ui/tab-bar';
+import { useLang, t } from '@/lib/i18n';
 
 interface Scenario {
   title: string;
@@ -15,7 +16,7 @@ interface Scenario {
 
 const TRACKS: {
   key: string;
-  label: string;
+  labelKey: string;
   icon: string;
   tagColor: string;
   tagBg: string;
@@ -23,7 +24,7 @@ const TRACKS: {
 }[] = [
   {
     key: 'tech',
-    label: 'ENTREVISTA TECH',
+    labelKey: 'trackTechInterview',
     icon: '\u25C6',
     tagColor: '#C8553D',
     tagBg: '#C8553D15',
@@ -34,7 +35,7 @@ const TRACKS: {
   },
   {
     key: 'meetings',
-    label: 'REUNI\u00D5ES EM INGL\u00CAS',
+    labelKey: 'trackMeetings',
     icon: '\u25D0',
     tagColor: '#1F3147',
     tagBg: '#1F314715',
@@ -45,7 +46,7 @@ const TRACKS: {
   },
   {
     key: 'data',
-    label: 'IA / DADOS',
+    labelKey: 'trackData',
     icon: '\u25B2',
     tagColor: '#D97A2B',
     tagBg: '#D97A2B15',
@@ -56,7 +57,7 @@ const TRACKS: {
   },
   {
     key: 'support',
-    label: 'SUPORTE AO CLIENTE',
+    labelKey: 'trackSupport',
     icon: '\u25CF',
     tagColor: '#5E7A4F',
     tagBg: '#5E7A4F15',
@@ -67,7 +68,7 @@ const TRACKS: {
   },
   {
     key: 'sales',
-    label: 'VENDAS / CLIENTES',
+    labelKey: 'trackSales',
     icon: '\u25C7',
     tagColor: '#E8A23A',
     tagBg: '#E8A23A15',
@@ -78,13 +79,15 @@ const TRACKS: {
   },
 ];
 
-const DIFFICULTY_MAP: Record<string, { label: string; color: string; bg: string }> = {
-  beginner: { label: 'Iniciante', color: '#5E7A4F', bg: '#5E7A4F18' },
-  intermediate: { label: 'Intermedi\u00E1rio', color: '#D97A2B', bg: '#D97A2B18' },
-  advanced: { label: 'Avan\u00E7ado', color: '#C8553D', bg: '#C8553D18' },
+const DIFFICULTY_MAP: Record<string, { labelKey: string; color: string; bg: string }> = {
+  beginner: { labelKey: 'beginner', color: '#5E7A4F', bg: '#5E7A4F18' },
+  intermediate: { labelKey: 'intermediateLevel', color: '#D97A2B', bg: '#D97A2B18' },
+  advanced: { labelKey: 'advanced', color: '#C8553D', bg: '#C8553D18' },
 };
 
 export default function ScenariosPage() {
+  const { lang } = useLang();
+
   return (
     <div
       style={{
@@ -137,8 +140,8 @@ export default function ScenariosPage() {
             letterSpacing: -0.6,
           }}
         >
-          Cen&aacute;rios para{' '}
-          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>praticar.</span>
+          {t.scenariosPageTitle[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.scenariosPageTitleAccent[lang]}</span>
         </h2>
         <p
           style={{
@@ -148,7 +151,7 @@ export default function ScenariosPage() {
             margin: '6px 0 0',
           }}
         >
-          Escolha um cen&aacute;rio e comece a falar em ingl&ecirc;s com IA.
+          {t.scenariosPageSub[lang]}
         </p>
       </div>
 
@@ -166,7 +169,7 @@ export default function ScenariosPage() {
                 marginBottom: 10,
               }}
             >
-              {track.icon} {track.label}
+              {track.icon} {t[track.labelKey][lang]}
             </div>
 
             {/* Scenario cards */}
@@ -198,7 +201,7 @@ export default function ScenariosPage() {
                         }}
                       >
                         <Tag color={track.tagColor} bg={track.tagBg}>
-                          {track.label}
+                          {t[track.labelKey][lang]}
                         </Tag>
                         <span
                           style={{
@@ -261,7 +264,7 @@ export default function ScenariosPage() {
                               borderRadius: 4,
                             }}
                           >
-                            {diff.label.toUpperCase()}
+                            {t[diff.labelKey][lang].toUpperCase()}
                           </span>
                           <span
                             style={{
@@ -303,7 +306,7 @@ export default function ScenariosPage() {
       <div style={{ height: 80 }} />
 
       {/* Bottom tab bar */}
-      <TabBar active="Praticar" />
+      <TabBar active="practice" />
     </div>
   );
 }

@@ -114,4 +114,96 @@ export const t: Record<string, Record<Lang, string>> = {
   currentStreak: { pt: 'Streak atual', en: 'Current streak' },
   scoreTrend: { pt: '━━ TENDÊNCIA DE SCORE', en: '━━ SCORE TREND' },
   skillsProgress: { pt: '━━ HABILIDADES', en: '━━ SKILLS' },
+  speakingMinutesThisWeek: { pt: 'MINUTOS FALANDO ESTA SEMANA', en: 'SPEAKING MINUTES THIS WEEK' },
+  moreMinutesToCloseWeek: { pt: 'Mais 27 minutos para fechar a semana', en: '27 more minutes to close the week' },
+  sessions: { pt: 'SESSÕES', en: 'SESSIONS' },
+  thisWeek: { pt: 'esta semana', en: 'this week' },
+  progressTitle: { pt: 'Seu', en: 'Your' },
+  progressTitleAccent: { pt: 'progresso.', en: 'progress.' },
+  scoreTrendLabel: { pt: 'TENDÊNCIA DE SCORE', en: 'SCORE TREND' },
+  week: { pt: 'Sem', en: 'Wk' },
+
+  // Goal page items
+  goalTech: { pt: 'Entrevista tech', en: 'Tech interview' },
+  goalTechSub: { pt: 'Backend, frontend, system design', en: 'Backend, frontend, system design' },
+  goalMeetings: { pt: 'Reuniões em inglês', en: 'English meetings' },
+  goalMeetingsSub: { pt: 'Standups, planning, atualizações', en: 'Standups, planning, updates' },
+  goalData: { pt: 'Apresentação de projeto', en: 'Project presentation' },
+  goalDataSub: { pt: 'IA, dados, dashboards', en: 'AI, data, dashboards' },
+  goalSupport: { pt: 'Suporte ao cliente', en: 'Customer support' },
+  goalSupportSub: { pt: 'Atendimento, escalonamentos', en: 'Service, escalations' },
+  goalSales: { pt: 'Vendas / clientes internacionais', en: 'Sales / international clients' },
+  goalSalesSub: { pt: 'Discovery, demos, objeções', en: 'Discovery, demos, objections' },
+
+  // Consent page items
+  consentVoice: { pt: 'Aceito o processamento da minha voz para análise de inglês.', en: 'I accept voice processing for English analysis.' },
+  consentAi: { pt: 'Aceito receber feedback gerado por IA em português.', en: 'I accept receiving AI-generated feedback in my language.' },
+  consentEstimate: { pt: 'Entendo que as notas são estimativas educacionais — não certificação oficial.', en: 'I understand that scores are educational estimates — not official certification.' },
+  consentAudio: { pt: 'Permitir armazenar áudio por 30 dias para revisão (opcional).', en: 'Allow storing audio for 30 days for review (optional).' },
+  optional: { pt: 'opcional', en: 'optional' },
+  lgpdCompliant: { pt: 'LGPD · ANPD COMPLIANT', en: 'LGPD · ANPD COMPLIANT' },
+  profilePrivacy: { pt: 'Perfil → Privacidade', en: 'Profile → Privacy' },
+
+  // Diagnostic page
+  diagTranslation: { pt: 'Tradução: Conte sobre seu trabalho atual ou um projeto recente.', en: 'Translation: Tell me about your current job or a project you\'ve worked on recently.' },
+
+  // Session / Roleplay
+  repeat: { pt: '↻ Repetir', en: '↻ Repeat' },
+  translate: { pt: '↷ Traduzir', en: '↷ Translate' },
+  hint: { pt: '◆ Dica', en: '◆ Hint' },
+  slower: { pt: '♪ Mais devagar', en: '♪ Slower' },
+
+  // Feedback page
+  feedbackSectionLabel: { pt: '━━ FEEDBACK · TECH INTERVIEW', en: '━━ FEEDBACK · TECH INTERVIEW' },
+  disclaimerLabel: { pt: 'AVISO · ', en: 'NOTICE · ' },
+  forCompaniesAndBootcamps: { pt: 'Para empresas e bootcamps', en: 'For companies and bootcamps' },
+  trackMinutesEvolution: { pt: 'Acompanhe minutos, evolução e prontidão do time', en: 'Track minutes, evolution, and team readiness' },
+  enToPt: { pt: 'EN → PT', en: 'EN → PT' },
+
+  // Feedback skills
+  fluency: { pt: 'Fluência', en: 'Fluency' },
+  grammar: { pt: 'Gramática', en: 'Grammar' },
+  vocabulary: { pt: 'Vocabulário', en: 'Vocabulary' },
+  clarity: { pt: 'Clareza', en: 'Clarity' },
+  pronunciation: { pt: 'Pronúncia', en: 'Pronunciation' },
+
+  // B2B page
+  b2bSub: { pt: 'Acompanhe minutos praticados, evolução por habilidade e prontidão para entrevistas — sem expor áudios privados.', en: 'Track practice minutes, skill evolution, and interview readiness — without exposing private audio.' },
+  b2bForTeamsHeader: { pt: '━━ JOBENGLISH FOR TEAMS', en: '━━ JOBENGLISH FOR TEAMS' },
+  activeStudents: { pt: 'Alunos ativos', en: 'Active students' },
+  minutesPracticed: { pt: 'Minutos praticados', en: 'Minutes practiced' },
+  clarityEvolution: { pt: 'Evolução em clareza', en: 'Clarity evolution' },
+  completedWeek: { pt: 'Completaram a semana', en: 'Completed the week' },
+  seats: { pt: '/ 50 lugares', en: '/ 50 seats' },
+  inWeeks: { pt: 'em 4 semanas', en: 'in 4 weeks' },
+  ofCohort: { pt: 'do cohort', en: 'of cohort' },
+  avgSkillEvolution: { pt: '━━ EVOLUÇÃO MÉDIA POR HABILIDADE', en: '━━ AVERAGE SKILL EVOLUTION' },
+  privacyByDefault: { pt: 'Privacidade por padrão.', en: 'Privacy by default.' },
+  privacyNote: { pt: 'Admins veem progresso agregado — não áudios privados sem consentimento explícito do aluno.', en: 'Admins see aggregated progress — not private audio without explicit student consent.' },
+  usedBy: { pt: '━━ USADO POR', en: '━━ USED BY' },
+  techBootcamps: { pt: 'Bootcamps de tech', en: 'Tech bootcamps' },
+  supportTeams: { pt: 'Times de suporte', en: 'Support teams' },
+  bpos: { pt: 'BPOs', en: 'BPOs' },
+  productSquads: { pt: 'Squads de produto', en: 'Product squads' },
+  active: { pt: 'ATIVO', en: 'ACTIVE' },
+
+  // Scenarios page
+  scenariosPageTitle: { pt: 'Cenários para', en: 'Scenarios to' },
+  scenariosPageTitleAccent: { pt: 'praticar.', en: 'practice.' },
+  scenariosPageSub: { pt: 'Escolha um cenário e comece a falar em inglês com IA.', en: 'Choose a scenario and start speaking English with AI.' },
+  trackTechInterview: { pt: 'ENTREVISTA TECH', en: 'TECH INTERVIEW' },
+  trackMeetings: { pt: 'REUNIÕES EM INGLÊS', en: 'ENGLISH MEETINGS' },
+  trackData: { pt: 'IA / DADOS', en: 'AI / DATA' },
+  trackSupport: { pt: 'SUPORTE AO CLIENTE', en: 'CUSTOMER SUPPORT' },
+  trackSales: { pt: 'VENDAS / CLIENTES', en: 'SALES / CLIENTS' },
+  beginner: { pt: 'Iniciante', en: 'Beginner' },
+  intermediateLevel: { pt: 'Intermediário', en: 'Intermediate' },
+  advanced: { pt: 'Avançado', en: 'Advanced' },
+
+  // Dashboard
+  track: { pt: '━━ TRILHA · ENGLISH FOR TECH INTERVIEWS', en: '━━ TRACK · ENGLISH FOR TECH INTERVIEWS' },
+
+  // Correction card
+  correction: { pt: 'CORREÇÃO', en: 'CORRECTION' },
+  whyPrefix: { pt: 'Por que: ', en: 'Why: ' },
 };

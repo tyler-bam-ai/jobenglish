@@ -7,13 +7,14 @@ import { Tag } from '@/components/ui/tag';
 import { Sun } from '@/components/ui/sun';
 import { RadarChart } from '@/components/feedback/radar-chart';
 import { CorrectionCard } from '@/components/feedback/correction-card';
+import { useLang, t } from '@/lib/i18n';
 
 const SKILLS = [
-  { k: 'Fluência', v: 68 },
-  { k: 'Gramática', v: 64 },
-  { k: 'Vocabulário', v: 76 },
-  { k: 'Clareza', v: 74 },
-  { k: 'Pronúncia', v: 70 },
+  { kKey: 'fluency' as const, v: 68 },
+  { kKey: 'grammar' as const, v: 64 },
+  { kKey: 'vocabulary' as const, v: 76 },
+  { kKey: 'clarity' as const, v: 74 },
+  { kKey: 'pronunciation' as const, v: 70 },
 ];
 
 const CORRECTIONS = [
@@ -36,6 +37,7 @@ const CORRECTIONS = [
 
 export default function FeedbackPage() {
   const router = useRouter();
+  const { lang } = useLang();
 
   return (
     <div
@@ -85,7 +87,7 @@ export default function FeedbackPage() {
           >
             &times;
           </button>
-          <Tag color="#5E7A4F">&#9679; SESSÃO COMPLETA</Tag>
+          <Tag color="#5E7A4F">{t.sessionComplete[lang]}</Tag>
           <div style={{ width: 36 }} />
         </div>
 
@@ -98,7 +100,7 @@ export default function FeedbackPage() {
               letterSpacing: 2,
             }}
           >
-            &#9473;&#9473; FEEDBACK &middot; TECH INTERVIEW
+            {t.feedbackSectionLabel[lang]}
           </div>
           <h2
             style={{
@@ -111,8 +113,8 @@ export default function FeedbackPage() {
               letterSpacing: -0.6,
             }}
           >
-            Você comunicou bem{' '}
-            <span style={{ fontStyle: 'italic', color: '#C8553D' }}>a ideia principal.</span>
+            {t.feedbackTitle1[lang]}{' '}
+            <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.feedbackTitle2[lang]}</span>
           </h2>
         </div>
 
@@ -138,7 +140,7 @@ export default function FeedbackPage() {
                 letterSpacing: 1.5,
               }}
             >
-              SCORE GERAL
+              {t.overallScore[lang]}
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 2 }}>
               <span
@@ -176,7 +178,7 @@ export default function FeedbackPage() {
                 marginBottom: 6,
               }}
             >
-              &#8593; +9 vs. tentativa 1
+              {t.vsAttempt[lang]}
             </div>
             <div
               style={{
@@ -186,8 +188,7 @@ export default function FeedbackPage() {
                 lineHeight: 1.4,
               }}
             >
-              <strong>Work-ready em cenários comuns.</strong> Vamos deixar seu inglês mais natural
-              para entrevistas.
+              <strong>{t.workReady[lang]}</strong> {t.workReadySub[lang]}
             </div>
           </div>
         </div>
@@ -223,7 +224,7 @@ export default function FeedbackPage() {
                 letterSpacing: 1.5,
               }}
             >
-              &#9473;&#9473; HABILIDADES
+              {t.skills[lang]}
             </span>
             <span
               style={{
@@ -232,10 +233,10 @@ export default function FeedbackPage() {
                 color: '#8A7C6E',
               }}
             >
-              nesta sessão
+              {t.thisSession[lang]}
             </span>
           </div>
-          <RadarChart skills={SKILLS} />
+          <RadarChart skills={SKILLS.map(s => ({ k: t[s.kKey][lang], v: s.v }))} />
         </div>
       </div>
 
@@ -250,7 +251,7 @@ export default function FeedbackPage() {
               letterSpacing: 1.5,
             }}
           >
-            &#9473;&#9473; TOP 3 CORREÇÕES
+            {t.corrections[lang]}
           </span>
           <span
             style={{
@@ -259,7 +260,7 @@ export default function FeedbackPage() {
               color: '#8A7C6E',
             }}
           >
-            EN &rarr; PT
+            {t.enToPt[lang]}
           </span>
         </div>
         <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -291,11 +292,9 @@ export default function FeedbackPage() {
               letterSpacing: 1,
             }}
           >
-            AVISO &middot;{' '}
+            {t.disclaimerLabel[lang]}
           </span>
-          Notas geradas por IA, são{' '}
-          <strong style={{ color: '#1F1A14' }}>estimativas educacionais</strong>. Não substituem
-          certificação oficial e não devem ser usadas como base única para decisões de contratação.
+          {t.disclaimer[lang]}
         </div>
       </div>
 
@@ -304,10 +303,10 @@ export default function FeedbackPage() {
         style={{ padding: '16px 22px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}
       >
         <Btn variant="accent" onClick={() => router.push('/session/demo')}>
-          &#8635; Tentar novamente
+          {t.retry[lang]}
         </Btn>
         <Link href="/b2b" style={{ textDecoration: 'none' }}>
-          <Btn variant="ghost">Praticar frases técnicas</Btn>
+          <Btn variant="ghost">{t.practicePhrase[lang]}</Btn>
         </Link>
       </div>
 
@@ -345,9 +344,9 @@ export default function FeedbackPage() {
                 fontFamily: "var(--font-body), 'Manrope', 'Inter', system-ui, sans-serif",
               }}
             >
-              <div style={{ fontSize: 13, fontWeight: 600 }}>Para empresas e bootcamps</div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{t.forCompaniesAndBootcamps[lang]}</div>
               <div style={{ fontSize: 11, color: '#FFF8EC99', marginTop: 2 }}>
-                Acompanhe minutos, evolução e prontidão do time
+                {t.trackMinutesEvolution[lang]}
               </div>
             </div>
             <span style={{ fontSize: 16 }}>&rarr;</span>

@@ -6,9 +6,11 @@ import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
 import { Waveform } from '@/components/ui/waveform';
 import { setDiagnosticCompleted } from '@/lib/onboarding-store';
+import { useLang, t } from '@/lib/i18n';
 
 export default function DiagnosticPage() {
   const router = useRouter();
+  const { lang } = useLang();
   const [recording, setRecording] = useState(false);
   const [time, setTime] = useState(0);
   const [done, setDone] = useState(false);
@@ -53,7 +55,7 @@ export default function DiagnosticPage() {
             letterSpacing: 2,
           }}
         >
-          DIAGNÓSTICO &middot; 1 DE 5
+          {t.diagStep[lang]}
         </div>
         <h2
           style={{
@@ -66,8 +68,7 @@ export default function DiagnosticPage() {
             letterSpacing: -0.6,
           }}
         >
-          Responda em <span style={{ fontStyle: 'italic', color: '#C8553D' }}>inglês</span>, do seu
-          jeito.
+          {t.diagTitle1[lang]} <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.diagTitle2[lang]}</span>{t.diagTitle3[lang]}
         </h2>
       </div>
 
@@ -113,7 +114,7 @@ export default function DiagnosticPage() {
             borderTop: '1px solid #FFF8EC22',
           }}
         >
-          Tradução: Conte sobre seu trabalho atual ou um projeto recente.
+          {t.diagTranslation[lang]}
         </div>
       </div>
 
@@ -144,10 +145,10 @@ export default function DiagnosticPage() {
           }}
         >
           {recording
-            ? `\u25CF GRAVANDO \u00B7 ${fmt(time)}`
+            ? `${t.diagRecording[lang]} \u00B7 ${fmt(time)}`
             : done
-              ? `\u2713 GRAVADO \u00B7 ${fmt(time)}`
-              : 'TOQUE PARA GRAVAR'}
+              ? `${t.diagRecorded[lang]} \u00B7 ${fmt(time)}`
+              : t.diagTap[lang]}
         </div>
 
         <button
@@ -200,11 +201,11 @@ export default function DiagnosticPage() {
             }}
             style={{ background: 'transparent', border: 'none', color: '#5C5046', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}
           >
-            &#8635; Regravar
+            {t.diagRerecord[lang]}
           </button>
           <span style={{ color: '#E7DCC9' }}>&middot;</span>
           <button style={{ background: 'transparent', border: 'none', color: '#5C5046', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit' }}>
-            &#9834; Ouvir
+            {t.diagListen[lang]}
           </button>
         </div>
       </div>
@@ -220,7 +221,7 @@ export default function DiagnosticPage() {
           cursor: done ? 'pointer' : 'not-allowed',
         }}
       >
-        {done ? 'Enviar resposta \u2192' : 'Grave para continuar'}
+        {done ? t.diagSubmit[lang] : t.diagRecord[lang]}
       </Btn>
     </div>
   );

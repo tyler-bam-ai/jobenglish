@@ -1,19 +1,22 @@
 'use client';
 
 import Link from 'next/link';
+import { useLang, t as tr } from '@/lib/i18n';
 
 const TABS = [
-  { label: 'Início', icon: '\u25C9', href: '/dashboard' },
-  { label: 'Praticar', icon: '\u25D0', href: '/scenarios' },
-  { label: 'Progresso', icon: '\u25B2', href: '/progress' },
-  { label: 'Perfil', icon: '\u25CB', href: '/dashboard' },
+  { key: 'home' as const, icon: '\u25C9', href: '/dashboard' },
+  { key: 'practice' as const, icon: '\u25D0', href: '/scenarios' },
+  { key: 'progress' as const, icon: '\u25B2', href: '/progress' },
+  { key: 'profile' as const, icon: '\u25CB', href: '/dashboard' },
 ];
 
 interface TabBarProps {
   active?: string;
 }
 
-export function TabBar({ active = 'Início' }: TabBarProps) {
+export function TabBar({ active = 'home' }: TabBarProps) {
+  const { lang } = useLang();
+
   return (
     <div
       style={{
@@ -26,12 +29,12 @@ export function TabBar({ active = 'Início' }: TabBarProps) {
         padding: '10px 0 8px',
       }}
     >
-      {TABS.map((t) => {
-        const isActive = t.label === active;
+      {TABS.map((tab) => {
+        const isActive = tab.key === active;
         return (
           <Link
-            key={t.label}
-            href={t.href}
+            key={tab.key}
+            href={tab.href}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -44,8 +47,8 @@ export function TabBar({ active = 'Início' }: TabBarProps) {
               textDecoration: 'none',
             }}
           >
-            <div style={{ fontSize: 18 }}>{t.icon}</div>
-            {t.label}
+            <div style={{ fontSize: 18 }}>{tab.icon}</div>
+            {tr[tab.key][lang]}
           </Link>
         );
       })}

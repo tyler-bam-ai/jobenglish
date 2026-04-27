@@ -5,16 +5,18 @@ import { useRouter } from 'next/navigation';
 import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
 import { setConsents } from '@/lib/onboarding-store';
+import { useLang, t } from '@/lib/i18n';
 
 const CONSENTS = [
-  { id: 'voice', label: 'Aceito o processamento da minha voz para análise de inglês.', required: true },
-  { id: 'ai', label: 'Aceito receber feedback gerado por IA em português.', required: true },
-  { id: 'estimate', label: 'Entendo que as notas são estimativas educacionais — não certificação oficial.', required: true },
-  { id: 'audio', label: 'Permitir armazenar áudio por 30 dias para revisão (opcional).', required: false },
+  { id: 'voice', labelKey: 'consentVoice' as const, required: true },
+  { id: 'ai', labelKey: 'consentAi' as const, required: true },
+  { id: 'estimate', labelKey: 'consentEstimate' as const, required: true },
+  { id: 'audio', labelKey: 'consentAudio' as const, required: false },
 ];
 
 export default function ConsentPage() {
   const router = useRouter();
+  const { lang } = useLang();
   const [accepted, setAccepted] = useState<Record<string, boolean>>({
     voice: false,
     ai: false,
@@ -55,7 +57,7 @@ export default function ConsentPage() {
           <span
             style={{ width: 6, height: 6, borderRadius: '50%', background: '#5E7A4F', display: 'inline-block' }}
           />
-          LGPD &middot; ANPD COMPLIANT
+          {t.lgpdCompliant[lang]}
         </div>
         <h2
           style={{
@@ -68,8 +70,8 @@ export default function ConsentPage() {
             letterSpacing: -0.6,
           }}
         >
-          Antes de começar,{' '}
-          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>uns combinados.</span>
+          {t.consentTitle1[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.consentTitle2[lang]}</span>
         </h2>
         <p
           style={{
@@ -80,8 +82,7 @@ export default function ConsentPage() {
             lineHeight: 1.45,
           }}
         >
-          Para gerar feedback, vamos processar sua voz, transcrição e respostas. Você pode excluir
-          tudo quando quiser.
+          {t.consentSub[lang]}
         </p>
       </div>
 
@@ -133,10 +134,10 @@ export default function ConsentPage() {
                 )}
               </div>
               <div style={{ flex: 1, fontSize: 13.5, color: '#1F1A14', lineHeight: 1.4 }}>
-                {c.label}
+                {t[c.labelKey][lang]}
                 {!c.required && (
                   <span style={{ color: '#8A7C6E', fontSize: 11, marginLeft: 4 }}>
-                    &middot; opcional
+                    &middot; {t.optional[lang]}
                   </span>
                 )}
               </div>
@@ -164,10 +165,10 @@ export default function ConsentPage() {
               letterSpacing: 1,
             }}
           >
-            SEUS DIREITOS &middot;{' '}
+            {t.rightsLabel[lang]}
           </span>
-          Acessar, corrigir, exportar e excluir seus dados a qualquer momento em{' '}
-          <strong style={{ color: '#1F1A14' }}>Perfil &rarr; Privacidade</strong>.
+          {t.rightsText[lang]}{' '}
+          <strong style={{ color: '#1F1A14' }}>{t.profilePrivacy[lang]}</strong>.
         </div>
       </div>
 
@@ -182,7 +183,7 @@ export default function ConsentPage() {
           cursor: allRequired ? 'pointer' : 'not-allowed',
         }}
       >
-        {allRequired ? 'Concordo \u00B7 Continuar \u2192' : 'Aceite os itens obrigatórios'}
+        {allRequired ? t.consentAccept[lang] : t.consentRequired[lang]}
       </Btn>
     </div>
   );

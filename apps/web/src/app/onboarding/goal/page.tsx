@@ -5,18 +5,20 @@ import { useRouter } from 'next/navigation';
 import { TopNav } from '@/components/ui/top-nav';
 import { Btn } from '@/components/ui/button';
 import { setGoal } from '@/lib/onboarding-store';
+import { useLang, t } from '@/lib/i18n';
 
 const GOALS = [
-  { id: 'tech', label: 'Entrevista tech', sub: 'Backend, frontend, system design', icon: '\u25C6' },
-  { id: 'meetings', label: 'Reuniões em inglês', sub: 'Standups, planning, atualizações', icon: '\u25D0' },
-  { id: 'data', label: 'Apresentação de projeto', sub: 'IA, dados, dashboards', icon: '\u25B2' },
-  { id: 'support', label: 'Suporte ao cliente', sub: 'Atendimento, escalonamentos', icon: '\u25CF' },
-  { id: 'sales', label: 'Vendas / clientes internacionais', sub: 'Discovery, demos, objeções', icon: '\u25C7' },
+  { id: 'tech', labelKey: 'goalTech' as const, subKey: 'goalTechSub' as const, icon: '\u25C6' },
+  { id: 'meetings', labelKey: 'goalMeetings' as const, subKey: 'goalMeetingsSub' as const, icon: '\u25D0' },
+  { id: 'data', labelKey: 'goalData' as const, subKey: 'goalDataSub' as const, icon: '\u25B2' },
+  { id: 'support', labelKey: 'goalSupport' as const, subKey: 'goalSupportSub' as const, icon: '\u25CF' },
+  { id: 'sales', labelKey: 'goalSales' as const, subKey: 'goalSalesSub' as const, icon: '\u25C7' },
 ];
 
 export default function GoalPage() {
   const router = useRouter();
   const [picked, setPicked] = useState('tech');
+  const { lang } = useLang();
 
   return (
     <div
@@ -39,7 +41,7 @@ export default function GoalPage() {
             letterSpacing: 2,
           }}
         >
-          PASSO 01 &middot; OBJETIVO
+          {t.stepGoal[lang]}
         </div>
         <h2
           style={{
@@ -52,8 +54,8 @@ export default function GoalPage() {
             letterSpacing: -0.8,
           }}
         >
-          Onde você quer falar inglês{' '}
-          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>com confiança?</span>
+          {t.goalTitle1[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.goalTitle2[lang]}</span>
         </h2>
         <p
           style={{
@@ -63,7 +65,7 @@ export default function GoalPage() {
             margin: 0,
           }}
         >
-          Escolha um foco principal — você pode mudar depois.
+          {t.goalSub[lang]}
         </p>
       </div>
 
@@ -106,7 +108,7 @@ export default function GoalPage() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: active ? '#FFF8EC' : '#1F1A14' }}>
-                  {g.label}
+                  {t[g.labelKey][lang]}
                 </div>
                 <div
                   style={{
@@ -115,7 +117,7 @@ export default function GoalPage() {
                     marginTop: 2,
                   }}
                 >
-                  {g.sub}
+                  {t[g.subKey][lang]}
                 </div>
               </div>
               <div
@@ -143,7 +145,7 @@ export default function GoalPage() {
       </div>
 
       <Btn variant="accent" onClick={() => { setGoal(picked); router.push('/onboarding/consent'); }} style={{ marginTop: 16 }}>
-        Continuar &rarr;
+        {t.goalContinue[lang]}
       </Btn>
     </div>
   );

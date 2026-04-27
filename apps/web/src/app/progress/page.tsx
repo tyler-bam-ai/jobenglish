@@ -2,23 +2,26 @@
 
 import { Wordmark } from '@/components/ui/wordmark';
 import { TabBar } from '@/components/ui/tab-bar';
+import { useLang, t } from '@/lib/i18n';
 
 const SCORES = [
-  { week: 'Sem 1', value: 63 },
-  { week: 'Sem 2', value: 68 },
-  { week: 'Sem 3', value: 72 },
-  { week: 'Sem 4', value: 74 },
+  { weekNum: 1, value: 63 },
+  { weekNum: 2, value: 68 },
+  { weekNum: 3, value: 72 },
+  { weekNum: 4, value: 74 },
 ];
 
 const SKILLS = [
-  { label: 'Flu\u00EAncia', value: 72, color: '#C8553D' },
-  { label: 'Gram\u00E1tica', value: 65, color: '#D97A2B' },
-  { label: 'Vocabul\u00E1rio', value: 78, color: '#E8A23A' },
-  { label: 'Clareza', value: 70, color: '#1F3147' },
-  { label: 'Pron\u00FAncia', value: 60, color: '#5E7A4F' },
+  { labelKey: 'fluency' as const, value: 72, color: '#C8553D' },
+  { labelKey: 'grammar' as const, value: 65, color: '#D97A2B' },
+  { labelKey: 'vocabulary' as const, value: 78, color: '#E8A23A' },
+  { labelKey: 'clarity' as const, value: 70, color: '#1F3147' },
+  { labelKey: 'pronunciation' as const, value: 60, color: '#5E7A4F' },
 ];
 
 export default function ProgressPage() {
+  const { lang } = useLang();
+
   return (
     <div
       style={{
@@ -71,8 +74,8 @@ export default function ProgressPage() {
             letterSpacing: -0.6,
           }}
         >
-          Seu{' '}
-          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>progresso.</span>
+          {t.progressTitle[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.progressTitleAccent[lang]}</span>
         </h2>
       </div>
 
@@ -95,7 +98,7 @@ export default function ProgressPage() {
               marginBottom: 8,
             }}
           >
-            MINUTOS FALANDO ESTA SEMANA
+            {t.speakingMinutesThisWeek[lang]}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
             <span
@@ -144,7 +147,7 @@ export default function ProgressPage() {
               marginTop: 6,
             }}
           >
-            Mais 27 minutos para fechar a semana
+            {t.moreMinutesToCloseWeek[lang]}
           </div>
         </div>
       </div>
@@ -168,7 +171,7 @@ export default function ProgressPage() {
               letterSpacing: 1.4,
             }}
           >
-            SESS&Otilde;ES
+            {t.sessions[lang]}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 6 }}>
             <span
@@ -188,7 +191,7 @@ export default function ProgressPage() {
                 color: '#8A7C6E',
               }}
             >
-              esta semana
+              {t.thisWeek[lang]}
             </span>
           </div>
         </div>
@@ -230,7 +233,7 @@ export default function ProgressPage() {
                 fontWeight: 600,
               }}
             >
-              dias
+              {t.days[lang]}
             </span>
           </div>
         </div>
@@ -255,11 +258,11 @@ export default function ProgressPage() {
               marginBottom: 14,
             }}
           >
-            TEND&Ecirc;NCIA DE SCORE
+            {t.scoreTrendLabel[lang]}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {SCORES.map((s) => (
-              <div key={s.week} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div key={s.weekNum} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span
                   style={{
                     fontFamily: "var(--font-mono), 'JetBrains Mono', ui-monospace, monospace",
@@ -269,7 +272,7 @@ export default function ProgressPage() {
                     flexShrink: 0,
                   }}
                 >
-                  {s.week}
+                  {t.week[lang]} {s.weekNum}
                 </span>
                 <div
                   style={{
@@ -321,7 +324,7 @@ export default function ProgressPage() {
             marginBottom: 10,
           }}
         >
-          &#9473;&#9473; HABILIDADES
+          {t.skillsProgress[lang]}
         </div>
         <div
           style={{
@@ -335,7 +338,7 @@ export default function ProgressPage() {
           }}
         >
           {SKILLS.map((skill) => (
-            <div key={skill.label}>
+            <div key={skill.labelKey}>
               <div
                 style={{
                   display: 'flex',
@@ -352,7 +355,7 @@ export default function ProgressPage() {
                     color: '#1F1A14',
                   }}
                 >
-                  {skill.label}
+                  {t[skill.labelKey][lang]}
                 </span>
                 <span
                   style={{
@@ -390,7 +393,7 @@ export default function ProgressPage() {
       <div style={{ height: 80 }} />
 
       {/* Bottom tab bar */}
-      <TabBar active="Progresso" />
+      <TabBar active="progress" />
     </div>
   );
 }

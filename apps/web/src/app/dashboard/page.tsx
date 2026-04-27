@@ -5,6 +5,7 @@ import { Wordmark } from '@/components/ui/wordmark';
 import { Tag } from '@/components/ui/tag';
 import { Sun } from '@/components/ui/sun';
 import { TabBar } from '@/components/ui/tab-bar';
+import { useLang, t } from '@/lib/i18n';
 
 const TRACK_ITEMS = [
   { i: '01', t: 'Tell me about yourself', d: '5 min', done: true, active: false },
@@ -14,6 +15,8 @@ const TRACK_ITEMS = [
 ];
 
 export default function DashboardPage() {
+  const { lang } = useLang();
+
   return (
     <div
       style={{
@@ -62,7 +65,7 @@ export default function DashboardPage() {
             color: '#5C5046',
           }}
         >
-          Olá, Ana &#128075;
+          {t.greeting[lang]}
         </div>
         <h2
           style={{
@@ -75,8 +78,8 @@ export default function DashboardPage() {
             letterSpacing: -0.6,
           }}
         >
-          Sua entrevista{' '}
-          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>está mais perto.</span>
+          {t.homeTitle1[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#C8553D' }}>{t.homeTitle2[lang]}</span>
         </h2>
       </div>
 
@@ -99,7 +102,7 @@ export default function DashboardPage() {
               letterSpacing: 1.4,
             }}
           >
-            NÍVEL ATUAL
+            {t.currentLevel[lang]}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 4 }}>
             <span
@@ -131,7 +134,7 @@ export default function DashboardPage() {
               marginTop: 2,
             }}
           >
-            intermediário
+            {t.intermediate[lang]}
           </div>
         </div>
 
@@ -172,7 +175,7 @@ export default function DashboardPage() {
                 fontWeight: 600,
               }}
             >
-              dias
+              {t.days[lang]}
             </span>
           </div>
           <div
@@ -183,7 +186,7 @@ export default function DashboardPage() {
               marginTop: 2,
             }}
           >
-            continue assim
+            {t.keepGoing[lang]}
           </div>
         </div>
       </div>
@@ -199,7 +202,7 @@ export default function DashboardPage() {
             marginBottom: 8,
           }}
         >
-          &#9473;&#9473; PRÁTICA DE HOJE
+          {t.todayPractice[lang]}
         </div>
         <Link
           href="/session/demo"
@@ -268,7 +271,7 @@ export default function DashboardPage() {
                 color: '#FFF8EC',
               }}
             >
-              <span style={{ opacity: 0.9 }}>Foco: fluência + frases naturais</span>
+              <span style={{ opacity: 0.9 }}>{t.focus[lang]}</span>
               <span
                 style={{
                   background: '#FFF8EC',
@@ -315,7 +318,7 @@ export default function DashboardPage() {
                 fontWeight: 600,
               }}
             >
-              Meta semanal
+              {t.weeklyGoal[lang]}
             </span>
             <span
               style={{
@@ -353,7 +356,7 @@ export default function DashboardPage() {
               marginTop: 6,
             }}
           >
-            Mais 27 minutos para fechar a semana
+            {t.weeklyRemaining[lang]}
           </div>
         </div>
       </div>
@@ -369,7 +372,7 @@ export default function DashboardPage() {
             marginBottom: 8,
           }}
         >
-          &#9473;&#9473; TRILHA &middot; ENGLISH FOR TECH INTERVIEWS
+          {t.track[lang]}
         </div>
         {TRACK_ITEMS.map((s) => (
           <div
@@ -432,7 +435,7 @@ export default function DashboardPage() {
       <div style={{ height: 80 }} />
 
       {/* Bottom tab bar */}
-      <TabBar active="Início" />
+      <TabBar active="home" />
     </div>
   );
 }

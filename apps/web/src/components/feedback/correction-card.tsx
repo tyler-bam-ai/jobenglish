@@ -1,3 +1,7 @@
+'use client';
+
+import { useLang, t } from '@/lib/i18n';
+
 interface CorrectionCardProps {
   index: number;
   you: string;
@@ -6,6 +10,7 @@ interface CorrectionCardProps {
 }
 
 export function CorrectionCard({ index, you, better, why }: CorrectionCardProps) {
+  const { lang } = useLang();
   return (
     <div
       style={{
@@ -43,7 +48,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
             letterSpacing: 1.2,
           }}
         >
-          CORREÇÃO
+          {t.correction[lang]}
         </span>
       </div>
 
@@ -57,7 +62,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
             letterSpacing: 1,
           }}
         >
-          VOCÊ DISSE
+          {t.youSaid[lang]}
         </div>
         <div
           style={{
@@ -92,7 +97,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
             fontWeight: 600,
           }}
         >
-          &#10003; MELHOR
+          {t.better[lang]}
         </div>
         <div style={{ fontSize: 14, color: '#1F1A14', fontWeight: 500, marginTop: 2 }}>
           &ldquo;{better}&rdquo;
@@ -101,7 +106,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
 
       {/* Why */}
       <div style={{ fontSize: 12.5, color: '#5C5046', lineHeight: 1.4 }}>
-        <strong style={{ color: '#1F1A14' }}>Por que: </strong>
+        <strong style={{ color: '#1F1A14' }}>{t.whyPrefix[lang]}</strong>
         {why}
       </div>
 
@@ -120,7 +125,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
             cursor: 'pointer',
           }}
         >
-          &#9733; Salvar frase
+          {t.savePhrase[lang]}
         </button>
         <button
           style={{
@@ -135,7 +140,7 @@ export function CorrectionCard({ index, you, better, why }: CorrectionCardProps)
             cursor: 'pointer',
           }}
         >
-          &#9834; Ouvir
+          {t.listen[lang]}
         </button>
       </div>
     </div>

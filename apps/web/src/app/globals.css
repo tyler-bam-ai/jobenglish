@@ -85,26 +85,10 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Responsive app container — full-width on mobile, capped on desktop */
+/* App container — fills full width at all sizes */
 .app-container {
   width: 100%;
   min-height: 100vh;
-  margin: 0 auto;
-}
-
-@media (min-width: 640px) {
-  .app-container {
-    max-width: 480px;
-    border-left: 1px solid #E7DCC9;
-    border-right: 1px solid #E7DCC9;
-    box-shadow: 0 0 60px rgba(40, 28, 12, 0.08);
-  }
-}
-
-@media (min-width: 1024px) {
-  .app-container {
-    max-width: 520px;
-  }
 }
 
 /* Details summary reset */

@@ -39,6 +39,11 @@ export default function RootLayout({
             <div className="page-enter">{children}</div>
           </div>
         </LangProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/jobenglish/sw.js')}`,
+          }}
+        />
       </body>
     </html>
   );

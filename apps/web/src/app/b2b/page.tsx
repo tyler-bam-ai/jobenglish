@@ -3,24 +3,26 @@
 import { useRouter } from 'next/navigation';
 import { Btn } from '@/components/ui/button';
 import { Tag } from '@/components/ui/tag';
+import { useLang, t } from '@/lib/i18n';
 
 const STATS = [
-  { k: 'Alunos ativos', v: '42', s: '/ 50 lugares', good: false },
-  { k: 'Minutos praticados', v: '318', s: 'esta semana', good: false },
-  { k: 'Evolução em clareza', v: '+18%', s: 'em 4 semanas', good: true },
-  { k: 'Completaram a semana', v: '76%', s: 'do cohort', good: true },
+  { kKey: 'activeStudents' as const, v: '42', sKey: 'seats' as const, good: false },
+  { kKey: 'minutesPracticed' as const, v: '318', sKey: 'thisWeek' as const, good: false },
+  { kKey: 'clarityEvolution' as const, v: '+18%', sKey: 'inWeeks' as const, good: true },
+  { kKey: 'completedWeek' as const, v: '76%', sKey: 'ofCohort' as const, good: true },
 ];
 
 const SKILL_BARS = [
-  { k: 'Fluência', a: 58, b: 71 },
-  { k: 'Clareza', a: 62, b: 78 },
-  { k: 'Pronúncia', a: 64, b: 70 },
+  { kKey: 'fluency' as const, a: 58, b: 71 },
+  { kKey: 'clarity' as const, a: 62, b: 78 },
+  { kKey: 'pronunciation' as const, a: 64, b: 70 },
 ];
 
-const USE_CASES = ['Bootcamps de tech', 'Times de suporte', 'BPOs', 'Squads de produto'];
+const USE_CASE_KEYS = ['techBootcamps', 'supportTeams', 'bpos', 'productSquads'] as const;
 
 export default function B2BPage() {
   const router = useRouter();
+  const { lang } = useLang();
 
   return (
     <div
@@ -61,7 +63,7 @@ export default function B2BPage() {
           &larr;
         </button>
         <Tag color="#E8A23A" bg="#FFF8EC15">
-          PARA EMPRESAS
+          {t.forTeams[lang]}
         </Tag>
         <div style={{ width: 36 }} />
       </div>
@@ -76,7 +78,7 @@ export default function B2BPage() {
             letterSpacing: 2,
           }}
         >
-          &#9473;&#9473; JOBENGLISH FOR TEAMS
+          {t.b2bForTeamsHeader[lang]}
         </div>
         <h2
           style={{
@@ -88,8 +90,8 @@ export default function B2BPage() {
             letterSpacing: -0.6,
           }}
         >
-          Inglês de carreira{' '}
-          <span style={{ fontStyle: 'italic', color: '#E8A23A' }}>para times inteiros.</span>
+          {t.b2bTitle1[lang]}{' '}
+          <span style={{ fontStyle: 'italic', color: '#E8A23A' }}>{t.b2bTitle2[lang]}</span>
         </h2>
         <p
           style={{
@@ -100,8 +102,7 @@ export default function B2BPage() {
             lineHeight: 1.45,
           }}
         >
-          Acompanhe minutos praticados, evolução por habilidade e prontidão para entrevistas — sem
-          expor áudios privados.
+          {t.b2bSub[lang]}
         </p>
       </div>
 
@@ -146,14 +147,14 @@ export default function B2BPage() {
                 Trybe &middot; Bootcamp Q2
               </div>
             </div>
-            <Tag color="#5E7A4F">&#9679; ATIVO</Tag>
+            <Tag color="#5E7A4F">&#9679; {t.active[lang]}</Tag>
           </div>
 
           {/* 4 stat tiles */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {STATS.map((s) => (
               <div
-                key={s.k}
+                key={s.kKey}
                 style={{
                   padding: '10px 12px',
                   borderRadius: 12,
@@ -168,7 +169,7 @@ export default function B2BPage() {
                     letterSpacing: 1,
                   }}
                 >
-                  {s.k.toUpperCase()}
+                  {t[s.kKey][lang].toUpperCase()}
                 </div>
                 <div
                   style={{
@@ -190,7 +191,7 @@ export default function B2BPage() {
                     marginTop: 1,
                   }}
                 >
-                  {s.s}
+                  {t[s.sKey][lang]}
                 </div>
               </div>
             ))}
@@ -207,10 +208,10 @@ export default function B2BPage() {
                 marginBottom: 8,
               }}
             >
-              &#9473;&#9473; EVOLUÇÃO MÉDIA POR HABILIDADE
+              {t.avgSkillEvolution[lang]}
             </div>
             {SKILL_BARS.map((s) => (
-              <div key={s.k} style={{ marginBottom: 10 }}>
+              <div key={s.kKey} style={{ marginBottom: 10 }}>
                 <div
                   style={{
                     display: 'flex',
@@ -220,7 +221,7 @@ export default function B2BPage() {
                     marginBottom: 4,
                   }}
                 >
-                  <span style={{ color: '#1F1A14', fontWeight: 500 }}>{s.k}</span>
+                  <span style={{ color: '#1F1A14', fontWeight: 500 }}>{t[s.kKey][lang]}</span>
                   <span
                     style={{
                       color: '#8A7C6E',
@@ -278,8 +279,7 @@ export default function B2BPage() {
               lineHeight: 1.4,
             }}
           >
-            <strong style={{ color: '#1F1A14' }}>Privacidade por padrão.</strong> Admins veem
-            progresso agregado — não áudios privados sem consentimento explícito do aluno.
+            <strong style={{ color: '#1F1A14' }}>{t.privacyByDefault[lang]}</strong> {t.privacyNote[lang]}
           </div>
         </div>
       </div>
@@ -295,12 +295,12 @@ export default function B2BPage() {
             marginBottom: 8,
           }}
         >
-          &#9473;&#9473; USADO POR
+          {t.usedBy[lang]}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {USE_CASES.map((t) => (
+          {USE_CASE_KEYS.map((key) => (
             <div
-              key={t}
+              key={key}
               style={{
                 padding: '8px 12px',
                 borderRadius: 99,
@@ -310,7 +310,7 @@ export default function B2BPage() {
                 fontSize: 12,
               }}
             >
-              {t}
+              {t[key][lang]}
             </div>
           ))}
         </div>
@@ -323,7 +323,7 @@ export default function B2BPage() {
         style={{ padding: '12px 22px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}
       >
         <Btn variant="accent" onClick={() => router.push('/dashboard')}>
-          Falar com vendas &rarr;
+          {t.talkToSales[lang]}
         </Btn>
         <Btn
           variant="quiet"
@@ -331,7 +331,7 @@ export default function B2BPage() {
           style={{ color: '#FFF8EC99' }}
           onClick={() => router.push('/dashboard')}
         >
-          Voltar para o app
+          {t.backToApp[lang]}
         </Btn>
       </div>
     </div>
