@@ -8,3 +8,34 @@ dist
 *.tsbuildinfo
 package-lock.json
 apps/web/out
+
+# Added by GitHub sync (2026-10-10)
+.DS_Store
+
+# Added by GitHub sync (2026-10-10)
+node_modules/
+.venv/
+venv/
+.venv*/
+__pycache__/
+*.pyc
+.env.*
+!.env.example
+*.log
+.next/
+.turbo/
+.vercel/
+DerivedData/
+.derivedData/
+xcuserdata/
+.godot/
+.gradle/
+credentials/
+*.pem
+*.p12
+*.key
+*.mobileprovision
+API_KEYS*
+*service-account*.json
+token.json
+~$*
